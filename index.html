@@ -1,0 +1,1642 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>:root{color-scheme:light dark}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Genómica en Rosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#fdf4f8; --bg2:#f8e7f0; --surface:#ffffff; --surface2:#fff2f8;
+  --ink:#2c1522; --ink2:#6d4a5c; --ink3:#9b7787;
+  --line:#f2d6e4; --line2:#e8bed3;
+  --accent:#d31c6b; --accent2:#a3134f; --accentsoft:#ffe1ee;
+  --ok:#0f7a52; --oksoft:#dbf5e9; --bad:#c02040; --badsoft:#ffe0e6;
+  --u0:#a8560c; --u1:#d31c6b; --u2:#7333e0; --u3:#0c7d73; --u4:#0a6dbb; --u5:#4b46cf; --u6:#b01345;
+  --shadow:0 1px 2px rgba(80,20,50,.06), 0 8px 24px -12px rgba(120,20,70,.18);
+  --r:14px;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:"Source Sans 3",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Bricolage Grotesque","Source Sans 3",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#180f16; --bg2:#20141d; --surface:#241825; --surface2:#2d1d2d;
+    --ink:#fbeaf2; --ink2:#d5b3c5; --ink3:#a98c9c;
+    --line:#3a2434; --line2:#4d2f43;
+    --accent:#ff5c9d; --accent2:#ff8ab8; --accentsoft:#42172d;
+    --ok:#5fd8a4; --oksoft:#12362a; --bad:#ff7e94; --badsoft:#3d1620;
+    --u0:#e0a260; --u1:#ff5c9d; --u2:#b492ff; --u3:#4fd4c4; --u4:#69bdff; --u5:#9d99ff; --u6:#ff7fa3;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#180f16; --bg2:#20141d; --surface:#241825; --surface2:#2d1d2d;
+  --ink:#fbeaf2; --ink2:#d5b3c5; --ink3:#a98c9c;
+  --line:#3a2434; --line2:#4d2f43;
+  --accent:#ff5c9d; --accent2:#ff8ab8; --accentsoft:#42172d;
+  --ok:#5fd8a4; --oksoft:#12362a; --bad:#ff7e94; --badsoft:#3d1620;
+  --u0:#e0a260; --u1:#ff5c9d; --u2:#b492ff; --u3:#4fd4c4; --u4:#69bdff; --u5:#9d99ff; --u6:#ff7fa3;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:800;text-wrap:balance;margin:0;line-height:1.15;letter-spacing:-.015em}
+a{color:var(--accent2)}
+p{margin:0 0 .8em}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topin{max-width:1180px;margin:0 auto;padding:10px 18px 0;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:1.32rem}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block}
+.brand small{color:var(--ink3);font-size:.82rem;font-family:var(--mono)}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:9px;scrollbar-width:thin}
+nav.tabs button{flex:0 0 auto;font:600 .92rem/1 var(--body);color:var(--ink2);background:transparent;border:1px solid transparent;padding:9px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+nav.tabs button:hover{background:var(--surface2);color:var(--ink)}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+main{max-width:1180px;margin:0 auto;padding:26px 18px 90px}
+section[role="tabpanel"]{animation:fade .25s ease}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+
+/* ---------- generic ---------- */
+.lead{font-size:1.05rem;color:var(--ink2);max-width:66ch}
+.eyebrow{font:700 .72rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.mono{font-family:var(--mono);font-size:.9em}
+code{font-family:var(--mono);font-size:.87em;background:var(--surface2);border:1px solid var(--line);padding:.1em .35em;border-radius:5px}
+.pill{display:inline-flex;align-items:center;gap:6px;font:700 .74rem/1 var(--body);letter-spacing:.03em;padding:5px 9px;border-radius:999px;background:var(--accentsoft);color:var(--accent2);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.pill.gray{background:var(--surface2);color:var(--ink2);border-color:var(--line)}
+.btn{font:700 .92rem/1 var(--body);padding:11px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+.btn:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn.ghost{background:transparent;color:var(--accent2);border-color:var(--line2)}
+.btn.ghost:hover{background:var(--surface2)}
+.btn.sm{padding:7px 11px;font-size:.84rem}
+ul.tight{margin:.2em 0 .9em;padding-left:1.15em}
+ul.tight li{margin:.28em 0}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:520px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 .76rem/1.2 var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);background:var(--surface2)}
+tbody tr:last-child td{border-bottom:none}
+.note{border-left:3px solid var(--accent);background:var(--surface2);padding:12px 15px;border-radius:0 10px 10px 0}
+.note.warn{border-left-color:var(--bad);background:var(--badsoft)}
+.note.exam{border-left-color:var(--u2);background:color-mix(in srgb,var(--u2) 9%,var(--surface))}
+.note h4{font-size:.95rem;margin-bottom:.3em}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:.82rem}
+.flow span{background:var(--surface2);border:1px solid var(--line);padding:5px 9px;border-radius:8px}
+.flow i{color:var(--accent);font-style:normal;font-weight:700}
+.hr{height:1px;background:var(--line);margin:26px 0}
+.muted{color:var(--ink3);font-size:.87rem}
+
+/* ---------- home ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.95fr);gap:22px;align-items:start}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+.hero h2{font-size:clamp(1.9rem,4.6vw,2.7rem);margin-bottom:.35em}
+.hero h2 em{font-style:normal;color:var(--accent);position:relative}
+.pileup{display:flex;flex-direction:column;gap:5px;margin:10px 0 4px}
+.pileup .read{height:11px;border-radius:6px;border:1.5px solid var(--line2);background:repeating-linear-gradient(90deg,transparent 0 6px,var(--line) 6px 7px);position:relative;transition:background .3s}
+.pileup .read[data-done="1"]{background:var(--c);border-color:var(--c)}
+.refline{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--line2),var(--line));margin-top:2px}
+.cov{font-family:var(--mono);font-size:.8rem;color:var(--ink3);display:flex;justify-content:space-between;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;gap:7px;align-items:center;font:600 .84rem/1 var(--body);padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--line2)}
+.chip .sq{width:9px;height:9px;border-radius:3px;background:var(--c,var(--accent))}
+.freq{display:flex;flex-direction:column;gap:9px}
+.freqrow{display:grid;grid-template-columns:1fr 62px;gap:10px;align-items:center;font-size:.92rem}
+.bar{height:9px;border-radius:5px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.freqrow b{font-family:var(--mono);font-size:.8rem;color:var(--ink3);text-align:right}
+
+/* ---------- resúmenes ---------- */
+.reading{display:grid;grid-template-columns:210px minmax(0,1fr);gap:26px;align-items:start}
+@media(max-width:900px){.reading{grid-template-columns:1fr}.sidenav{position:static!important;display:flex;overflow-x:auto;gap:6px}}
+.sidenav{position:sticky;top:112px;display:flex;flex-direction:column;gap:3px}
+.sidenav a{flex:0 0 auto;display:flex;gap:9px;align-items:center;font:600 .87rem/1.25 var(--body);color:var(--ink2);text-decoration:none;padding:9px 10px;border-radius:9px;border-left:3px solid transparent}
+.sidenav a:hover{background:var(--surface2);color:var(--ink)}
+.sidenav a .sq{width:8px;height:8px;border-radius:2px;background:var(--c);flex:0 0 auto}
+.unit{scroll-margin-top:120px}
+.unit>header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:2px solid var(--c);margin-bottom:16px}
+.unit>header h3{font-size:1.45rem}
+.unit>header .k{font:700 .72rem/1 var(--mono);color:var(--c);letter-spacing:.1em}
+.done{display:inline-flex;gap:7px;align-items:center;font:600 .82rem/1 var(--body);color:var(--ink2);cursor:pointer;user-select:none;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.done input{accent-color:var(--accent);width:15px;height:15px;margin:0}
+.block{margin-bottom:20px}
+.block h4{font-size:1.02rem;margin-bottom:.4em;color:var(--ink)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.95rem}
+.kv dt{font-weight:700;color:var(--c)}
+.kv dd{margin:0;color:var(--ink2)}
+.deck2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--surface)}
+.mini b{display:block;font-family:var(--disp);font-size:.98rem;margin-bottom:.25em}
+.mini p{font-size:.9rem;color:var(--ink2);margin:0}
+
+/* ---------- flashcards ---------- */
+.fcwrap{max-width:720px;margin:0 auto}
+.fc{perspective:1400px;height:330px;margin:16px 0}
+.fcin{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,.15,.2,1);transform-style:preserve-3d;cursor:pointer}
+.fc.flip .fcin{transform:rotateY(180deg)}
+.fcface{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);padding:26px;display:flex;flex-direction:column;justify-content:center;gap:12px;overflow:auto}
+.fcface.back{transform:rotateY(180deg);background:var(--surface2)}
+.fcface .q{font-family:var(--disp);font-size:1.3rem;font-weight:700;text-wrap:balance}
+.fcface .a{font-size:1.02rem;color:var(--ink)}
+.fcface .a ul{margin:.4em 0 0;padding-left:1.1em}
+.fctop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fchint{position:absolute;bottom:14px;left:0;right:0;text-align:center;font:600 .74rem/1 var(--body);color:var(--ink3);letter-spacing:.06em;text-transform:uppercase}
+.progressline{height:6px;background:var(--surface2);border-radius:4px;border:1px solid var(--line);overflow:hidden}
+.progressline i{display:block;height:100%;background:var(--accent)}
+
+/* ---------- quiz ---------- */
+.q{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:16px 18px;box-shadow:var(--shadow)}
+.q .stem{font-weight:600;margin-bottom:10px}
+.q .stem .src{font:600 .7rem/1 var(--mono);color:var(--ink3);display:block;margin-bottom:6px;letter-spacing:.04em}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{text-align:left;font:400 .95rem/1.4 var(--body);color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 13px;cursor:pointer;display:flex;gap:9px}
+.opt:hover{border-color:var(--line2)}
+.opt .l{font-family:var(--mono);font-weight:700;color:var(--ink3);flex:0 0 auto}
+.opt[data-state="ok"]{background:var(--oksoft);border-color:var(--ok);color:var(--ink)}
+.opt[data-state="bad"]{background:var(--badsoft);border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.why{margin-top:11px;border-left:3px solid var(--accent);background:var(--surface2);padding:10px 13px;border-radius:0 10px 10px 0;font-size:.93rem}
+.why b{color:var(--accent2)}
+.scorebar{position:sticky;top:104px;z-index:20;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 15px;box-shadow:var(--shadow);margin-bottom:16px}
+.score{font-family:var(--mono);font-size:.9rem;color:var(--ink2)}
+.score b{color:var(--accent2);font-size:1.05rem}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{font:600 .8rem/1 var(--body);padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);color:var(--ink2);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+details.model{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0;overflow:hidden}
+details.model>summary{cursor:pointer;padding:14px 17px;font-weight:700;font-family:var(--disp);list-style:none;display:flex;gap:10px;align-items:flex-start}
+details.model>summary::-webkit-details-marker{display:none}
+details.model>summary::before{content:"›";font-family:var(--mono);color:var(--accent);font-weight:700;transition:transform .2s;display:inline-block}
+details.model[open]>summary::before{transform:rotate(90deg)}
+details.model .body{padding:0 17px 16px;border-top:1px solid var(--line);margin-top:2px;padding-top:13px}
+
+/* ---------- simulacro ---------- */
+.timer{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--accent2);font-variant-numeric:tabular-nums}
+.timer.low{color:var(--bad)}
+.examhead{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:14px 18px;box-shadow:var(--shadow)}
+.tf{display:flex;gap:8px}
+.tf button{font:700 .84rem/1 var(--body);padding:9px 15px;border-radius:9px;border:1px solid var(--line2);background:var(--surface2);color:var(--ink2);cursor:pointer}
+.tf button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.resultcard{text-align:center;padding:26px}
+.resultcard .big{font-family:var(--disp);font-size:3rem;font-weight:800;color:var(--accent);line-height:1}
+
+/* ---------- glosario ---------- */
+.search{width:100%;font:400 1rem/1.3 var(--body);padding:12px 15px;border-radius:11px;border:1px solid var(--line2);background:var(--surface);color:var(--ink)}
+.gloss{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.gterm{border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:var(--surface)}
+.gterm b{font-family:var(--disp);display:block;font-size:.98rem}
+.gterm span{font-size:.9rem;color:var(--ink2)}
+.gterm .tag{font:700 .66rem/1 var(--mono);color:var(--ink3);letter-spacing:.08em;text-transform:uppercase}
+footer{max-width:1180px;margin:0 auto;padding:0 18px 40px;color:var(--ink3);font-size:.84rem}
+</style>
+
+<div class="top">
+  <div class="topin">
+    <div class="brand">
+      <span class="dot"></span>
+      <h1>Genómica en Rosa</h1>
+      <small>1er parcial · Genómica y Proteómica</small>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button role="tab" id="t-inicio" aria-controls="p-inicio" aria-selected="true">Inicio</button>
+      <button role="tab" id="t-resumen" aria-controls="p-resumen" aria-selected="false">Resúmenes</button>
+      <button role="tab" id="t-cards" aria-controls="p-cards" aria-selected="false">Tarjetas</button>
+      <button role="tab" id="t-quiz" aria-controls="p-quiz" aria-selected="false">Preguntas</button>
+      <button role="tab" id="t-sim" aria-controls="p-sim" aria-selected="false">Simulacro</button>
+      <button role="tab" id="t-rec" aria-controls="p-rec" aria-selected="false">Recursos</button>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+<!-- ============ INICIO ============ -->
+<section role="tabpanel" id="p-inicio" aria-labelledby="t-inicio">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Del genoma a la función</p>
+      <h2>Todo lo que entra en tu <em>primer parcial</em>, en un solo lugar.</h2>
+      <p class="lead">Siete unidades armadas a partir de tus resúmenes (actividad previa, clases 1&#8209;3 y los dos TPs), más flashcards, un banco de preguntas tomadas de parciales y finales reales, y simulacros cronometrados.</p>
+      <div class="row" style="margin-top:16px">
+        <button class="btn" data-go="resumen">Empezar por los resúmenes</button>
+        <button class="btn ghost" data-go="sim">Tomarme un simulacro</button>
+      </div>
+      <div class="note" style="margin-top:20px">
+        <h4>Cómo usar esto</h4>
+        <p style="margin:0">Leé la unidad → pasá las tarjetas de esa unidad → respondé las preguntas filtradas por esa unidad. Cuando tengas 4 o 5 unidades cerradas, recién ahí hacé un simulacro completo con el reloj corriendo. Tu progreso se guarda en este navegador.</p>
+      </div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Tu cobertura</p>
+      <div class="pileup" id="pileup"></div>
+      <div class="refline"></div>
+      <div class="cov"><span id="covtxt">0 / 7 unidades</span><span id="covpct">0X</span></div>
+      <div class="hr" style="margin:16px 0"></div>
+      <p class="eyebrow">Ir a una unidad</p>
+      <div class="chips" id="unitchips"></div>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+
+  <h3 style="font-size:1.35rem;margin-bottom:.3em">Lo que más se repite en los exámenes</h3>
+  <p class="lead" style="margin-bottom:18px">Conté las apariciones en los 9 exámenes que tenés (2022 a 2026). Si tenés poco tiempo, estudiá de arriba hacia abajo.</p>
+  <div class="grid g2">
+    <div class="card">
+      <p class="eyebrow" style="margin-bottom:12px">Enunciados de Verdadero/Falso</p>
+      <div class="freq" id="freq"></div>
+    </div>
+    <div class="stack">
+      <div class="note exam">
+        <h4>Los 4 “clásicos” que casi siempre están</h4>
+        <ul class="tight" style="margin-bottom:0">
+          <li><b>Exoma ≠ expresión.</b> “Con un WES puedo averiguar la abundancia de transcriptos” → <b>FALSO</b>.</li>
+          <li><b>Long reads para de novo.</b> Las cortas <i>no</i> resuelven repetitivas.</li>
+          <li><b>Llamado vs. anotación</b> de variantes (te lo piden con ejemplo).</li>
+          <li><b>GWAS = asociación poblacional</b>, no diagnóstico de monogénicas.</li>
+        </ul>
+      </div>
+      <div class="note warn">
+        <h4>Ojo: hay exámenes que son finales</h4>
+        <p style="margin:0">Varios de los PDFs que subiste son <b>finales</b> e incluyen transcriptómica (RNA-seq, expresión diferencial, single-cell), proteómica (espectrometría de masas, huella peptídica) y cáncer/cBioPortal. <b>Eso no está en tus resúmenes</b> y no lo incluí acá. En la pestaña Recursos te dejo la lista de esos temas marcados, para que no te asustes cuando los veas en un modelo viejo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESÚMENES ============ -->
+<section role="tabpanel" id="p-resumen" aria-labelledby="t-resumen" hidden>
+  <div class="reading">
+    <aside class="sidenav" id="sidenav"></aside>
+    <div class="stack" id="units"></div>
+  </div>
+</section>
+
+<!-- ============ TARJETAS ============ -->
+<section role="tabpanel" id="p-cards" aria-labelledby="t-cards" hidden>
+  <div class="fcwrap">
+    <p class="eyebrow">Tarjetas</p>
+    <h3 style="font-size:1.5rem;margin-bottom:.3em">Preguntá, tapá, respondé</h3>
+    <p class="lead">Clic en la tarjeta (o barra espaciadora) para darla vuelta. Marcá <b>La sé</b> y desaparece del mazo hasta que reinicies.</p>
+    <div class="filters" id="fcfilters" style="margin:16px 0 6px"></div>
+    <div class="fctop">
+      <span class="mono" id="fccount">–</span>
+      <button class="btn ghost sm" id="fcreset">Reiniciar mazo</button>
+    </div>
+    <div class="progressline" style="margin-top:8px"><i id="fcbar" style="width:0%"></i></div>
+    <div class="fc" id="fc">
+      <div class="fcin">
+        <div class="fcface front"><div class="q" id="fcq">Elegí un mazo para empezar.</div><div class="fchint">clic para ver la respuesta</div></div>
+        <div class="fcface back"><div class="a" id="fca"></div><div class="fchint">clic para volver</div></div>
+      </div>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <button class="btn ghost" id="fcprev">← Anterior</button>
+      <button class="btn ghost" id="fcagain">Repasar después</button>
+      <button class="btn" id="fcknow">La sé ✓</button>
+      <button class="btn ghost" id="fcnext">Siguiente →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREGUNTAS ============ -->
+<section role="tabpanel" id="p-quiz" aria-labelledby="t-quiz" hidden>
+  <div class="scorebar">
+    <div class="filters" id="qfilters"></div>
+    <div class="row">
+      <span class="score">Puntaje: <b id="qscore">0</b> / <span id="qtotal">0</span></span>
+      <button class="btn ghost sm" id="qreset">Reiniciar</button>
+    </div>
+  </div>
+  <div class="stack" id="qlist"></div>
+  <div class="hr"></div>
+  <h3 style="font-size:1.4rem;margin-bottom:.3em">Preguntas de desarrollo</h3>
+  <p class="lead" style="margin-bottom:16px">Textuales de parciales y finales anteriores. Escribí tu respuesta en papel <b>antes</b> de abrir los criterios: la cátedra corrige que aparezcan esos puntos.</p>
+  <div class="stack" id="devlist"></div>
+</section>
+
+<!-- ============ SIMULACRO ============ -->
+<section role="tabpanel" id="p-sim" aria-labelledby="t-sim" hidden>
+  <div id="simstart">
+    <p class="eyebrow">Simulacro</p>
+    <h3 style="font-size:1.5rem;margin-bottom:.3em">Como el parcial de verdad</h3>
+    <p class="lead">10 preguntas objetivas mezcladas al azar del banco + 3 de desarrollo, con reloj. El parcial real dura 2&#8209;3 h y se aprueba con el 50%; acá te doy 45 minutos para esta muestra.</p>
+    <div class="grid g3" style="margin:20px 0">
+      <div class="mini"><b>Parte I</b><p>6 Verdadero/Falso con justificación (así los toman: justificar aunque sea verdadero).</p></div>
+      <div class="mini"><b>Parte II</b><p>4 multiple choice. En el parcial real las incorrectas restan.</p></div>
+      <div class="mini"><b>Parte III</b><p>3 a desarrollar. Se autocorrigen con la lista de criterios.</p></div>
+    </div>
+    <button class="btn" id="simgo">Arrancar simulacro</button>
+  </div>
+  <div id="simrun" hidden>
+    <div class="examhead">
+      <div><p class="eyebrow" style="margin:0 0 3px">Tiempo restante</p><div class="timer" id="simtimer">45:00</div></div>
+      <div class="row">
+        <button class="btn" id="simend">Entregar</button>
+        <button class="btn ghost" id="simquit">Salir</button>
+      </div>
+    </div>
+    <div class="stack" id="simbody" style="margin-top:18px"></div>
+  </div>
+</section>
+
+<!-- ============ RECURSOS ============ -->
+<section role="tabpanel" id="p-rec" aria-labelledby="t-rec" hidden>
+  <div class="stack" id="recursos"></div>
+</section>
+
+</main>
+<footer>
+  <p>Armado a partir de tus resúmenes: Actividad previa, Clase 1, Clase 2, Clase 3, TP 1 y TP 2. Las preguntas salen de los parciales 2023, 2024, recuperatorio 2024, 2025 2C, 2026 1C y de los finales 2022, junio 2023, dic. 2024 y julio 2025.</p>
+</footer>
+
+<script>
+/* ============================================================
+   datos
+   ============================================================ */
+var UNITS=[
+ {id:"u0",n:"0",t:"El genoma humano por dentro",v:"var(--u0)",src:"Actividad previa"},
+ {id:"u1",n:"1",t:"Ómicas, regulación y validación",v:"var(--u1)",src:"Clase 1"},
+ {id:"u2",n:"2",t:"Proyecto Genoma Humano y NGS",v:"var(--u2)",src:"Clase 2"},
+ {id:"u3",n:"3",t:"Variación, poblaciones y bases de datos",v:"var(--u3)",src:"Clase 3"},
+ {id:"u4",n:"4",t:"TP 1 · Del FASTQ a la variante",v:"var(--u4)",src:"TP 1"},
+ {id:"u5",n:"5",t:"TP 2 · Anotar, filtrar y clasificar",v:"var(--u5)",src:"TP 2"},
+ {id:"u6",n:"6",t:"cfDNA prenatal: la genómica en la clínica",v:"var(--u6)",src:"Actividad previa"}
+];
+var SUM={};
+
+SUM.u0=`
+<div class="block">
+ <h4>Genotipo, fenotipo y todo lo que hay en el medio</h4>
+ <p>El <b>genotipo</b> es la secuencia de ADN de una persona (nuclear + mitocondrial). El <b>fenotipo</b> es todo lo demás: no sólo lo visible, también ser celíaco, intolerante a la lactosa, el metabolismo, la susceptibilidad a enfermedades o la respuesta a un fármaco. Sobre el fenotipo pesan además el <b>ambiente</b>, la <b>historia de vida</b> y la <b>epigenética</b>.</p>
+ <div class="flow"><span>GENOTIPO</span><i>+</i><span>AMBIENTE</span><i>+</i><span>HISTORIA DE VIDA</span><i>+</i><span>EPIGENÉTICA</span><i>=</i><span>FENOTIPO</span></div>
+ <p style="margin-top:10px">Todas tus células tienen prácticamente el mismo ADN: lo que hace distinta a una neurona de un hepatocito es <b>qué genes se expresan</b>, regulado en parte por cuán compactada está cada región de cromatina. El genoma <i>condiciona</i> pero no <i>determina</i>: la partitura es fija, la interpretación no.</p>
+</div>
+
+<div class="block">
+ <h4>Qué hay adentro de los 3,2 × 10⁹ pb</h4>
+ <ul class="tight">
+  <li><b>Sólo 2&#8209;3% codifica proteínas</b> (~23.000 genes). Los exones son ~1% del genoma.</li>
+  <li><b>Genes de ARN no codificante</b> (~3000): ARNt, ARNr, miARN, siARN, lncRNA. No todo ARN se traduce.</li>
+  <li><b>Elementos reguladores</b>: promotores, enhancers, silencers, sitios de unión de factores de transcripción. Pueden estar lejos del gen, incluso en otro cromosoma.</li>
+  <li><b>Repetitivas</b>: LINE (~21%), SINE (~13%, p. ej. <i>Alu</i>), minisatélites, microsatélites, telómeros, pseudogenes.</li>
+  <li><b>Familias génicas</b> por duplicación + divergencia (globinas, actinas, receptores olfativos).</li>
+ </ul>
+ <div class="note"><h4>La pregunta que cae seguro</h4><p style="margin:0">Un genoma más grande <b>no</b> implica más genes ni más complejidad: la diferencia de tamaño entre genes se explica sobre todo por la <b>longitud de los intrones</b> (los exones miden ~200 pb en promedio). Y los humanos no somos ni la especie con más genes ni la del genoma más grande.</p></div>
+</div>
+
+<div class="block">
+ <h4>Un genoma, muchas más proteínas</h4>
+ <p>No se puede deducir el proteoma sólo de la secuencia, porque:</p>
+ <ul class="tight">
+  <li><b>Splicing alternativo</b>: distintas combinaciones de exones (siempre en el orden del genoma). ~95% de los genes multiexónicos generan variantes.</li>
+  <li><b>Promotores alternativos</b> y <b>edición de ARN</b> (A→I, que se lee como G; C→U en mitocondrias de plantas). Puede ser tejido&#8209;específica.</li>
+  <li><b>Excepción del sistema inmune</b>: 10⁸–10¹⁰ anticuerpos por <b>recombinación del ADN</b> (no del ARN).</li>
+  <li><b>Pseudogenes</b>: derivados de genes reales que perdieron función; los que vienen de retrotranscripción de un ARNm <b>no tienen intrones</b>.</li>
+ </ul>
+</div>
+
+<div class="block">
+ <h4>Organización: cómo se guarda todo eso</h4>
+ <div class="kv">
+  <dt>Procariotas</dt><dd>Una molécula circular asociada a proteínas = <b>nucleoide</b>, más <b>plásmidos</b> (resistencia a antibióticos, vectores).</dd>
+  <dt>Eucariotas</dt><dd>ADN lineal en el núcleo → histonas → <b>nucleosoma</b> (~146 pb) → fibra de 30 nm → cromatina → cromosoma mitótico. 46 cromosomas: 22 pares de autosomas + sexuales.</dd>
+  <dt>Orgánulos</dt><dd>Mitocondrias y cloroplastos tienen ADN <b>circular, sin histonas</b>, y ribosomas de tipo procariota → evidencia de la <b>teoría endosimbiótica</b> (mitocondria ~ Rickettsia; cloroplasto ~ cianobacteria). Muchos de sus genes migraron al núcleo.</dd>
+ </div>
+</div>
+
+<div class="block">
+ <h4>Encontrar genes en una secuencia cruda</h4>
+ <p>Después de secuenciar tenés A/T/G/C sin marcas. Se buscan <b>ORFs</b> (de ATG a codón stop) en los <b>6 marcos de lectura</b> posibles, más señales: caja TATA, GT al inicio del intrón, AG al final, codón stop, señal de poliadenilación, uso de codones no aleatorio.</p>
+ <ul class="tight">
+  <li><b>Métodos a priori</b>: patrones en la propia secuencia.</li>
+  <li><b>Métodos por comparación</b>: homología con genes/proteínas conocidos, ESTs, ADNc, conservación evolutiva.</li>
+  <li>Es más fácil en procariotas (~90% del genoma de <i>E. coli</i> es codificante, sin intrones) que en eucariotas.</li>
+ </ul>
+</div>
+
+<div class="block">
+ <h4>Elementos transponibles (~45% del genoma)</h4>
+ <p>Descubiertos por <b>Barbara McClintock</b> en maíz (mosaicos de pigmentación).</p>
+ <div class="deck2">
+  <div class="mini"><b>Clase I · Retrotransposones</b><p>Se mueven vía un intermediario de ARN. <b>LINE</b> (1&#8209;5 kb, codifican transcriptasa reversa, L1 ~20.000 copias) y <b>SINE</b> (200&#8209;300 pb, cientos de miles de copias, usan la maquinaria de los LINE; <i>Alu</i>).</p></div>
+  <div class="mini"><b>Clase II · Transposones de ADN</b><p>Sin intermediario de ARN. Codifican <b>transposasa</b>. Cortar y pegar, o copiar y pegar. La escisión puede ser imprecisa y dejar mutaciones.</p></div>
+ </div>
+ <p style="margin-top:10px">Efectos: knockout por inserción, cambios de regulación o de splicing, nuevas isoformas, fusiones génicas, reorganizaciones (inversiones, translocaciones, deleciones — p. ej. las asociadas a Prader&#8209;Willi/Angelman). La célula los silencia con <b>metilación</b> y <b>siARN</b>; la hipometilación puede reactivarlos.</p>
+</div>
+`;
+
+SUM.u1=`
+<div class="block">
+ <h4>Genética vs. genómica (y por qué la materia es “genómica funcional”)</h4>
+ <div class="kv">
+  <dt>Genética</dt><dd>Genes individuales, su estructura, función y herencia.</dd>
+  <dt>Genómica</dt><dd>El genoma completo y las relaciones entre todos sus elementos.</dd>
+  <dt>Genómica funcional</dt><dd>La pregunta real de la materia: <b>cómo la información del genoma se convierte en función biológica</b>. Qué genes se expresan, cuándo, dónde, en qué cantidad.</dd>
+ </div>
+ <p style="margin-top:10px">Una hoja al sol y una hoja a la sombra tienen el mismo genoma pero <b>distinto transcriptoma</b>. Una función normal o alterada es el resultado de todas las regulaciones que van del ADN a la proteína.</p>
+</div>
+
+<div class="block">
+ <h4>Qué molécula estudio y con qué técnica</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Molécula</th><th>Qué importa</th><th>Técnicas</th></tr></thead>
+  <tbody>
+   <tr><td><b>ADN</b> (estable)</td><td>La <b>secuencia</b></td><td>Sanger, NGS 2ª y 3ª gen, PCR, Southern blot</td></tr>
+   <tr><td><b>ARN</b> (dinámico)</td><td>Secuencia y sobre todo <b>abundancia</b></td><td>NGS previa retrotranscripción a ADNc, RT&#8209;qPCR, Northern blot</td></tr>
+   <tr><td><b>Proteínas</b> (dinámicas)</td><td>Sobre todo <b>abundancia</b>; también secuencia</td><td>Espectrometría de masas, ELISA, Western blot. <b>No</b> se pueden estudiar por NGS: son aminoácidos, no nucleótidos</td></tr>
+  </tbody>
+ </table></div>
+</div>
+
+<div class="block">
+ <h4>El zoológico de las ómicas</h4>
+ <div class="deck2">
+  <div class="mini"><b>Transcriptoma</b><p>Todos los ARN de una célula en un momento y condición dados. Codificantes (ARNm) y no codificantes (lncRNA, miRNA).</p></div>
+  <div class="mini"><b>Proteoma</b><p>Todas las proteínas en un momento y condición. Variantes: cuantitativa, de interacciones, de orgánulos, fosfoproteómica, PTMs.</p></div>
+  <div class="mini"><b>Metaboloma</b><p>Todos los metabolitos (lípidos, glúcidos, glicanos, aminoácidos). Subcampos: lipidómica, glicómica.</p></div>
+  <div class="mini"><b>Epigenoma</b><p>Metilación del ADN, modificaciones de histonas, organización de la cromatina. No cambia la secuencia.</p></div>
+  <div class="mini"><b>Metagenómica</b><p>Material genético de una comunidad entera tomada del ambiente, <b>sin cultivar</b>.</p></div>
+  <div class="mini"><b>Microbioma</b><p>El conjunto de microorganismos de un ambiente (intestino, piel) junto con su información genética.</p></div>
+ </div>
+</div>
+
+<div class="block">
+ <h4>Con hipótesis y sin hipótesis</h4>
+ <p>Las ómicas pueden ser <b>hypothesis&#8209;driven</b> o <b>discovery&#8209;driven</b> (“libres de hipótesis”). En el segundo caso el recorrido se invierte:</p>
+ <div class="flow"><span>datos masivos</span><i>→</i><span>diferencias/patrones</span><i>→</i><span>hipótesis</span><i>→</i><span>validación experimental</span></div>
+ <p style="margin-top:10px">No reemplaza al método científico: lo alimenta. Ventaja clave: <b>reduce el sesgo del investigador</b>, que suele plantear hipótesis sólo sobre lo que ya conoce. El paper de la clase (<i>Big data and experimental biology</i>) concluye que los dos enfoques son <b>complementarios</b>, que una lista de genes o un Gene Ontology <b>no alcanzan</b> (hay que construir un modelo biológico) y defiende reutilizar bases públicas con principios <b>FAIR</b>.</p>
+ <div class="note exam"><h4>Ejemplo listo para el examen</h4><p style="margin:0"><b>Con hipótesis:</b> “los pacientes con diabetes tipo 2 expresan menos genes de secreción de insulina” → RNA&#8209;seq de páncreas caso/control → validación por RT&#8209;qPCR. <b>Sin hipótesis:</b> proteómica de tumor vs. tejido sano sin buscar nada puntual → aparecen proteínas de respuesta inmune aumentadas → <i>nueva</i> hipótesis: “la activación inmune participa en el crecimiento tumoral” → se testea con knockout o inhibición.</p></div>
+</div>
+
+<div class="block">
+ <h4>Los tres niveles de validación ⭐</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Nivel</th><th>Pregunta que responde</th><th>Cómo se hace</th></tr></thead>
+  <tbody>
+   <tr><td><b>Técnica</b></td><td>¿La medición es correcta o es un artefacto del método?</td><td>Confirmar el hallazgo (microarray, RNA&#8209;seq, NGS) con una técnica independiente: RT&#8209;qPCR, ddPCR, <b>Sanger</b>. Evaluar sensibilidad, especificidad, precisión, límite de detección. Aun con corrección FDR hay falsos positivos.</td></tr>
+   <tr><td><b>Biológica</b></td><td>¿Se repite en muestras independientes o fue casualidad de esa muestra/lote?</td><td>Réplicas biológicas, cohorte independiente. En GWAS: replicar la asociación en <b>otra población</b>.</td></tr>
+   <tr><td><b>Funcional</b></td><td>¿El gen/variante <b>causa</b> el fenotipo o sólo está asociado?</td><td>Knockout, knockdown, sobreexpresión, CRISPR, ensayos reporteros (luciferasa), modelos animales. Es la que pasa de correlación a <b>causalidad</b>.</td></tr>
+  </tbody>
+ </table></div>
+ <p style="margin-top:10px" class="muted">Orden habitual: técnica → biológica → funcional (no es regla estricta).</p>
+</div>
+
+<div class="block">
+ <h4>Los dos casos de la clase</h4>
+ <div class="deck2">
+  <div class="mini"><b>Svante Pääbo (Nobel 2022)</b><p>¿Qué relación evolutiva hay entre <i>H. sapiens</i> y homínidos extintos? ADN antiguo degradado y contaminado → primero <b>ADN mitocondrial</b> (miles de copias por célula), después genoma nuclear. Resultado: neandertales y denisovanos se cruzaron con nosotros (1&#8209;4% neandertal en Europa/Asia, hasta 6% denisovano en Melanesia), con genes que aún influyen (inmunidad, <b>EPAS1</b> y la altura en tibetanos). Imposible con biología molecular clásica: hacía falta NGS + bioinformática + genómica comparativa.</p></div>
+  <div class="mini"><b>C4 y esquizofrenia</b><p>Del locus MHC (asociado por GWAS con ~37.000 casos y 113.000 controles) al gen causal: <b>C4</b>, sobre todo C4A. Más expresión de C4A = más riesgo. C4 se expresa en neuronas, se localiza en sinapsis y los ratones knockout tienen <b>menos poda sináptica</b>. Por qué mirar el cerebro si la variante está en todas las células: porque el ADN es el mismo, pero la <b>expresión</b> y la función son tejido&#8209;específicas.</p></div>
+ </div>
+ <div class="note warn"><h4>No confundir</h4><p style="margin:0"><b>Fibrosis quística</b>: hereda dos alelos patogénicos de <i>CFTR</i> (uno de cada padre) → enfermedad; con uno solo, portador sano. <b>Esquizofrenia</b>: se heredan variantes de <b>susceptibilidad</b> que aumentan el riesgo y por sí solas no alcanzan. Somos &gt;99,9% iguales: ese &lt;0,1% explica buena parte de la variabilidad.</p></div>
+</div>
+`;
+
+SUM.u2=`
+<div class="block">
+ <h4>HGP vs. Celera: la misma química, distinta estrategia</h4>
+ <p>Los dos usaron <b>Sanger automatizado</b> (ddNTP fluorescentes que cortan la síntesis). Lo que cambió fue cómo <b>fragmentaron, ordenaron y ensamblaron</b>.</p>
+ <div class="tablewrap"><table>
+  <thead><tr><th></th><th>Proyecto público (Francis Collins)</th><th>Celera (Craig Venter)</th></tr></thead>
+  <tbody>
+   <tr><td><b>Método</b></td><td><i>Hierarchical / clone&#8209;by&#8209;clone shotgun</i></td><td><i>Whole&#8209;genome shotgun</i></td></tr>
+   <tr><td><b>Lógica</b></td><td>Primero <b>ordeno</b>, después secuencio</td><td>Primero <b>secuencio todo</b>, después ordeno con la computadora</td></tr>
+   <tr><td><b>Pasos</b></td><td>Fragmentos grandes → clonados en <b>BAC</b> → ubicados con STS, fingerprinting y FISH → <b>mapa físico</b> → cada BAC se refragmenta → Sanger → ensamblado</td><td>Fragmentación masiva directa → 27,27 M de lecturas propias (~543 pb, 5 individuos) → algoritmos buscan solapamientos. Sumó datos públicos del HGP: &gt;43 M de lecturas en total</td></tr>
+   <tr><td><b>Por qué fue más rápido</b></td><td>—</td><td>Se salteó casi todo el mapeo físico previo + automatización + capacidad computacional + <b>datos públicos del HGP</b></td></tr>
+  </tbody>
+ </table></div>
+ <p style="margin-top:10px">Otros datos del proyecto: internacional y público desde <b>1990</b>, con la política de publicar las secuencias <b>dentro de las 24 h</b> del ensamblado; antes se secuenciaron organismos más chicos (levadura, <i>C. elegans</i>) para probar las técnicas. Los donantes fueron <b>20 voluntarios</b> y ~70% de la secuencia final vino de uno solo: la referencia <b>no</b> es de una persona ni un “genoma promedio”.</p>
+</div>
+
+<div class="block">
+ <h4>La línea de tiempo que piden ordenar</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Año</th><th>Hito</th><th>Lo que hay que saber</th></tr></thead>
+  <tbody>
+   <tr><td><b>2001</b></td><td>Borradores: <i>Initial sequencing…</i> (Nature, consorcio) y <i>The Sequence of the Human Genome</i> (Science, Celera)</td><td>Eran <b>drafts</b>: gaps, regiones sin resolver, errores de ensamblado. No publicaron sólo secuencia: número y estructura de genes, exones/intrones, contenido GC, repetidos, transposones, duplicaciones, SNPs, evolución. Celera estimó 26.000&#8209;38.000 genes; el consorcio 30.000&#8209;40.000</td></tr>
+   <tr><td><b>2004</b></td><td><i>Finishing the euchromatic sequence</i></td><td>~2,85 Gb, sólo <b>341 gaps</b>, ~99% de la <b>eucromatina</b>, error ~1 en 100.000 bases, estimación de genes baja a 20.000&#8209;25.000. Seguían faltando centrómeros, regiones pericentroméricas y subteloméricas, duplicaciones segmentarias y brazos cortos acrocéntricos</td></tr>
+   <tr><td><b>2022</b></td><td>T2T · <i>The complete sequence of a human genome</i> (Nurk et al.)</td><td>Telómero a telómero de los <b>22 autosomas + X</b>; agregó o corrigió ~200 Mb. Combinó <b>PacBio HiFi + Nanopore ultralong</b>. Faltó el <b>cromosoma Y</b> porque la línea CHM13 (mola hidatidiforme) es <b>46,XX</b></td></tr>
+   <tr><td><b>2023</b></td><td><i>The complete sequence of a human Y chromosome</i></td><td>Genoma HG002. ~62,46 Mb, +30 Mb respecto de GRCh38. Difícil por repeticiones en tándem, palíndromos, duplicaciones segmentarias y heterocromatina: un problema de <b>ensamblaje</b>, no de química</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note warn"><h4>El malentendido que buscan en el V/F</h4><p style="margin:0">La heterocromatina no era difícil porque “esté compacta y la enzima no entre” (al extraer el ADN esa compactación se pierde): era difícil porque está llena de <b>secuencias repetitivas casi idénticas</b> y con reads cortas no se sabe en qué copia va cada una. Una long read atraviesa el bloque repetido y llega a secuencia única de los dos lados.</p></div>
+</div>
+
+<div class="block">
+ <h4>Secuenciar ≠ anotar</h4>
+ <div class="flow"><span>Secuenciación: ¿qué bases hay?</span><i>vs.</i><span>Anotación: ¿qué significa cada región?</span></div>
+ <p style="margin-top:10px">La anotación busca patrones (promotores, sitio de inicio de transcripción, ATG, exones, intrones, sitios de splicing, codones stop, poliadenilación) y los cruza con evidencia: ARNm y ADNc conocidos, <b>ESTs</b>, proteínas, genes homólogos de otras especies, conservación, familias de dominios. Por eso una función puede asignarse <b>por homología</b> sin haber estudiado la proteína (anotación funcional predictiva, que después habría que confirmar).</p>
+ <p>Y por eso <b>el número de genes humanos no es un valor fijo</b>: GENCODE, Ensembl, RefSeq y CHESS parten de la misma secuencia pero usan criterios distintos y reportan números distintos de codificantes, lncRNA, pseudogenes y transcriptos.</p>
+</div>
+
+<div class="block">
+ <h4>NGS: segunda generación</h4>
+ <p>El salto es la <b>secuenciación masiva en paralelo</b>: millones de reacciones a la vez. Sanger necesitaría ~4,2 millones de reacciones (~42.000 placas de 96 pocillos, ~8 años) para 3,2 Gpb; NGS hace un genoma humano en <b>1 a 5 días</b>. Flujo general: fragmentación → adaptadores → amplificación → secuenciación → análisis bioinformático.</p>
+ <p><b>El cuello de botella se mudó</b>: antes era generar la secuencia, ahora es almacenar, procesar, analizar e interpretar los datos.</p>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Tecnología</th><th>Cómo detecta</th><th>Detalles y problema</th></tr></thead>
+  <tbody>
+   <tr><td><b>Pirosecuenciación</b> (Roche 454)</td><td>Incorporación → <b>PPi</b> → cascada enzimática → <b>luz</b></td><td>Un solo tipo de dNTP por ciclo (hay ciclos sin señal). Falla en <b>homopolímeros</b>: la intensidad no distingue bien 6, 7 u 8 bases iguales</td></tr>
+   <tr><td><b>Ion Torrent</b></td><td>Incorporación → <b>H⁺</b> → cambio de potencial</td><td>Igual esquema, un dNTP por ciclo. Mismo problema con homopolímeros</td></tr>
+   <tr><td><b>Illumina</b></td><td>Los <b>4 nucleótidos juntos</b>, cada uno con fluoróforo + <b>terminador reversible</b></td><td>Tagmentación → librería → <b>flow cell</b> → <b>PCR puente</b> → <b>clusters</b> (amplifican la señal). Ciclo: incorporación → imaging → cleavage. Como entra <b>una base por ciclo</b>, resuelve bien los homopolímeros</td></tr>
+  </tbody>
+ </table></div>
+ <p class="muted" style="margin-top:8px">Común a la 2ª generación: secuenciación por síntesis, muchísimas reacciones en paralelo, microfluídica con ciclos de agregado y lavado. Amplificación previa: PCR en emulsión (una bead = un fragmento = miles de copias) o PCR puente.</p>
+</div>
+
+<div class="block">
+ <h4>NGS: tercera generación</h4>
+ <p>Nacen para resolver lo que las reads cortas no podían: regiones repetitivas y ensamblados de novo. Se basan en <b>single molecule sequencing</b> (molécula individual) y evitan la amplificación, que introduce errores de polimerasa.</p>
+ <div class="deck2">
+  <div class="mini"><b>PacBio (SMRT)</b><p>Sí es secuenciación por síntesis. Polimerasa + molécula única dentro de un <b>ZMW</b>, señal fluorescente <b>en tiempo real</b>. Con <b>hairpins</b> el fragmento se circulariza y la polimerasa lo lee varias vueltas → <b>secuencia consenso</b> de alta precisión (HiFi).</p></div>
+  <div class="mini"><b>Oxford Nanopore</b><p><b>No</b> es secuenciación por síntesis: lectura directa. El ADN atraviesa un <b>nanoporo</b> y altera la <b>corriente iónica</b>; esos cambios se traducen en bases. Reads larguísimas, equipo portátil, resultados en tiempo real (no hay que esperar el fin de la corrida).</p></div>
+ </div>
+ <div class="note exam"><h4>Short vs. long reads</h4><p style="margin:0"><b>Cortas (Illumina):</b> muchísimas reads, alta precisión por base, bajo costo, ecosistema bioinformático enorme → ideales para SNPs conocidos, RNA&#8209;seq con muchas muestras, gran profundidad barata. <b>Largas (PacBio/Nanopore):</b> atraviesan repetitivas, mejores para <b>de novo</b>, variantes estructurales, transcriptos completos, haplotipos, metagenómica. Fueron “Method of the Year” de Nature Methods en 2023.</p></div>
+</div>
+
+<div class="block">
+ <h4>Archivos, cobertura y multiplexado</h4>
+ <div class="kv">
+  <dt>FASTQ</dt><dd>Lo que devuelve el secuenciador: identificador + <b>secuencia + calidad de cada base</b>. La calidad cae hacia el final por la <b>desincronización de las polimerasas</b> dentro del cluster (la señal se vuelve difusa).</dd>
+  <dt>FASTA</dt><dd>Sólo identificador + secuencia. Se usa para el genoma de referencia.</dd>
+  <dt>Read</dt><dd>Secuencia continua obtenida en la corrida; un fragmento del ADN original.</dd>
+  <dt>Library</dt><dd>Todos los fragmentos preparados para secuenciar, con adaptadores y, si hace falta, <b>barcodes</b>.</dd>
+  <dt>Profundidad</dt><dd>Cuántas reads independientes cubren una posición. <b>30X</b> = cada posición leída ~30 veces en promedio.</dd>
+  <dt>Single vs. paired&#8209;end</dt><dd>1 fragmento = 1 read, vs. 1 fragmento = 2 reads (una de cada extremo, con distancia conocida). Paired&#8209;end mejora mapeo, ensamblado, indels y variantes estructurales.</dd>
+  <dt>Multiplexado</dt><dd>Varias muestras en una corrida, cada una con su <b>barcode</b>; después se demultiplexan. Como la máquina genera un total finito de reads, <b>más muestras = menos profundidad por muestra</b>.</dd>
+ </div>
+ <div class="note"><h4>Por qué importa la profundidad</h4><p style="margin:0">Es un muestreo. Con 2 reads que dicen G podrías creer que es G/G por puro azar; con 100 reads (≈50 A / 50 G) tenés evidencia fuerte de heterocigosis. Y si de 100 reads 99 dicen A y una dice G, esa G probablemente sea un <b>error de secuenciación</b>.</p></div>
+</div>
+
+<div class="block">
+ <h4>De reads a variantes</h4>
+ <div class="flow"><span>ADN</span><i>→</i><span>fragmentación</span><i>→</i><span>library</span><i>→</i><span>FASTQ</span><i>→</i><span>QC</span><i>→</i><span>mapeo/alineamiento</span><i>→</i><span>variant calling</span><i>→</i><span>VCF</span><i>→</i><span>anotación</span><i>→</i><span>interpretación</span></div>
+ <ul class="tight" style="margin-top:12px">
+  <li><b>Sin referencia</b> → ensamblado <b>de novo</b>: reads → solapamientos → contigs → scaffolds. Las repetitivas son el problema.</li>
+  <li><b>Con referencia</b> → alineamiento + <b>variant calling</b>: mucho más simple computacionalmente. El genoma de referencia es un <b>andamiaje</b>, no una lista de variantes patogénicas.</li>
+  <li>Mapear es más difícil en genomas grandes y con reads cortas: más lugares donde podría encajar.</li>
+ </ul>
+ <p><b>VCF</b> = lista de diferencias respecto de la referencia: <code>CHROM</code>, <code>POS</code>, <code>REF</code>, <code>ALT</code>, <code>QUAL</code>, <code>INFO</code>. Un VCF sin anotar dice <b>qué</b> variante hay y <b>dónde</b>, no qué efecto tiene.</p>
+</div>
+
+<div class="block">
+ <h4>Cuánto genoma secuencio, y los SNP arrays</h4>
+ <div class="kv">
+  <dt>WGS</dt><dd>Genoma completo (de novo o contra referencia). Único que ve regiones reguladoras, intrónicas, no codificantes y variantes estructurales.</dd>
+  <dt>WES</dt><dd>Sólo el <b>exoma</b> (~1% del genoma, ~30 Mb) donde se concentra gran parte de las variantes de enfermedad conocidas.</dd>
+  <dt>Targeted</dt><dd>Regiones puntuales de interés. El WES es, conceptualmente, un targeted amplio.</dd>
+  <dt>¿Cómo se capturan?</dt><dd>Con <b>sondas</b> complementarias (hibridación) o con <b>PCR</b> de primers específicos, antes de armar la library.</dd>
+ </div>
+ <div class="note warn"><h4>SNP array ≠ secuenciación</h4><p style="margin:0">Es una <b>plataforma de genotipificación</b>: cientos de miles de sondas para posiciones <b>ya conocidas y variables</b>; el ADN hibrida y la intensidad de fluorescencia dice qué genotipo hay. NGS pregunta “¿qué dice acá?”; el array pregunta “en esta posición, ¿tenés A o G?”. Sirven porque muchas variantes se heredan juntas por <b>desequilibrio de ligamiento</b>, así que un SNP marca una región entera. Es la tecnología de los servicios tipo 23andMe y la que hizo posibles los <b>GWAS</b> a gran escala.</p></div>
+ <p style="margin-top:10px">Tipos de variantes: <b>SNV/SNP</b> (un nucleótido), <b>indels</b>, <b>estructurales</b> (deleciones, duplicaciones, inversiones, inserciones, translocaciones, cambios de número de copias). Y según su origen: <b>germinales</b> (heredables, en todas las células) o <b>somáticas</b> (aparecen durante la vida en un linaje celular).</p>
+</div>
+`;
+
+SUM.u3=`
+<div class="block">
+ <h4>Earth BioGenome Project: una biblioteca digital de la vida</h4>
+ <p>Objetivo: un <b>genoma de referencia</b> de alta calidad para todas las especies eucariotas conocidas. Hoy tenemos secuencia de ~<b>1%</b> de los eucariotas. Dentro del EBP está el <b>Darwin Tree of Life</b> (~70.000 especies de Gran Bretaña e Irlanda).</p>
+ <div class="flow"><span>muestra + identificación (DNA barcoding)</span><i>→</i><span>extracción y secuenciación (long reads)</span><i>→</i><span>ensamblado a nivel cromosómico</span><i>→</i><span>anotación</span></div>
+ <p style="margin-top:10px"><b>Desafíos:</b> escala logística, tecnología más rápida y barata, <b>anotación</b> (el paso más complejo: pasar de secuencia a biología), capacidad computacional (nube, “analizar una vez y reutilizar muchas veces”) y <b>acceso equitativo</b>: gran parte de la biodiversidad está en el Sur Global y las comunidades locales deben participar.</p>
+ <p><b>Para qué sirve:</b> evolución y filogenia, adaptación al ambiente, conservación (lince ibérico, chancro del fresno), agricultura (parientes silvestres de cultivos, plagas, pesquerías), biotecnología. Datos de <b>acceso abierto</b>: secuencias, anotaciones, datos crudos, protocolos y herramientas.</p>
+</div>
+
+<div class="block">
+ <h4>De la referencia al individuo: los primeros genomas diploides</h4>
+ <p>Las primeras referencias eran esencialmente <b>haploides</b> y compuestas (HGP: varios donantes; Celera: consenso de 5 individuos). Pero somos <b>diploides</b>: en cada posición hay dos alelos, uno materno y uno paterno.</p>
+ <div class="deck2">
+  <div class="mini"><b>HuRef · Levy et al. 2007</b><p>Primer genoma diploide individual. Mostró que la variabilidad no es sólo SNPs: indels, inversiones, <b>duplicaciones segmentarias</b> (&gt;5 kb con &gt;90% de identidad) y <b>62 CNVs</b> (ganancias y pérdidas), algunos afectando genes de OMIM. Los CNVs se detectaban con <b>CGH</b> y <b>SNP arrays</b>.</p></div>
+  <div class="mini"><b>Watson · Wheeler et al. 2008</b><p>Por <b>secuenciación masiva en paralelo</b>, redundancia <b>7,4X</b>, ~2 meses y menos de US$1 M (contra ~US$100 M del genoma de Venter por Sanger). ~3,3 M de SNPs, ~10.654 con cambio de aminoácido, indels y CNVs de 26 kb a 1,5 Mb.</p></div>
+ </div>
+ <div class="note"><h4>Un detalle fino que da puntos</h4><p style="margin:0">En Watson, los SNPs <b>ya conocidos</b> estaban repartidos ~50/50 entre homocigotas y heterocigotas, pero los <b>nuevos</b> eran 83,3% heterocigotas. Tiene sentido: una variante nueva es rara en la población, así que es mucho más probable encontrarla en una sola copia.</p></div>
+</div>
+
+<div class="block">
+ <h4>Diversidad humana: África, cuellos de botella y admixture</h4>
+ <p>Un solo genoma de referencia <b>no representa a la especie</b>. La mayor diversidad genética está en las poblaciones <b>africanas</b>: los humanos modernos surgieron en África y acumularon variación durante más tiempo. Al secuenciar individuos africanos (p. ej. el genoma Bushman/Khoisan, Schuster et al. 2010) aparecieron millones de SNPs <b>nuevos</b>, muchos en realidad <b>ancestrales</b> pero mal representados en las primeras referencias.</p>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Fenómeno</th><th>Qué pasa</th></tr></thead>
+  <tbody>
+   <tr><td><b>Cuello de botella</b></td><td>Una población grande se <b>reduce drásticamente</b> por un evento; los sobrevivientes son una muestra azarosa. Al recuperarse el tamaño, la diversidad perdida no vuelve.</td></tr>
+   <tr><td><b>Efecto fundador</b></td><td>Un <b>grupo pequeño se separa</b> y funda una población nueva, llevando sólo parte de la diversidad original. Es lo que pasó al salir de África: la diversidad fuera de África es <b>menor</b>.</td></tr>
+   <tr><td><b>Población cerrada</b></td><td>Poco flujo génico externo → ciertos alelos se mantienen y la deriva genética pesa más.</td></tr>
+   <tr><td><b>Admixture</b></td><td>Qué proporción del genoma de un individuo corresponde a distintas poblaciones ancestrales (el gráfico de barras de colores). No es “de dónde sos”, es cómo se distribuyen tus variantes.</td></tr>
+  </tbody>
+ </table></div>
+ <p class="muted" style="margin-top:8px">Las diferencias entre poblaciones no son “diferencias entre razas”: son variación acumulada durante la historia evolutiva. Hay que distinguir variantes <b>ancestrales</b> de <b>derivadas</b>.</p>
+</div>
+
+<div class="block">
+ <h4>Las bases de datos, una por una ⭐</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Base</th><th>Para qué es</th><th>Detalle que preguntan</th></tr></thead>
+  <tbody>
+   <tr><td><b>dbSNP</b></td><td>Catálogo de <b>identificadores</b> (rsID) de variantes</td><td>Es infraestructura de <b>nomenclatura</b>, inclusiva y <b>no curada</b>: puede tener artefactos. La misma variante puede figurar como G→A o C→T según la <b>hebra</b> (rs4988235). Un rsID (rs113993960) no es lo mismo que un nombre descriptivo (ΔF508)</td></tr>
+   <tr><td><b>1000 Genomes</b></td><td>Catálogo de variabilidad <b>poblacional</b> (2008&#8209;2015): SNPs, indels, CNVs</td><td>Buscaba &gt;95% de las variantes de frecuencia relativamente baja; da frecuencias por población, haplotipos y <b>LD</b>. Alta cobertura: 3202 muestras, 26 poblaciones, incluidas PUR y CLM (individuos <b>admixados</b>)</td></tr>
+   <tr><td><b>gnomAD</b></td><td>Frecuencias alélicas de cientos de miles de exomas y genomas</td><td>Es <b>la</b> base para filtrar por frecuencia hoy. Ej.: rs334 (HBB, anemia falciforme) tiene frecuencia global muy distinta de la africana</td></tr>
+   <tr><td><b>Ensembl</b></td><td>Información de una variante caracterizada</td><td>Alelo, cromosoma, posición, región, <b>consecuencias</b> predichas (p. ej. si cae en un intrón)</td></tr>
+   <tr><td><b>ENCODE</b></td><td>Catálogo de <b>elementos funcionales</b>: ChIP&#8209;seq, ATAC&#8209;seq, DNase&#8209;seq en muchos tipos celulares</td><td>Permite preguntar si una variante intrónica cae en un enhancer o promotor (intrón 1 de <i>FTO</i>; región reguladora <i>LCT/MCM6</i>)</td></tr>
+   <tr><td><b>ClinVar</b></td><td>Interpretación <b>clínica</b> de variantes, aportada por laboratorios</td><td>No mires sólo la clasificación: mirá el <b>review status</b> (estrellas) y si hay <b>conflictos</b> entre submitters (típico en BRCA1 → problema de las <b>VUS</b>). rs113993960 en CFTR tiene miles de envíos concordantes</td></tr>
+   <tr><td><b>ClinGen</b></td><td><b>Cura la evidencia</b> de la relación gen&#8209;enfermedad</td><td>Clasifica esa evidencia (Definitive… Limited, Disputed), evalúa <b>dosage sensitivity</b> (clave para CNVs, p. ej. 22q11.2) y publica especificaciones ACMG por gen. Que un gen esté en un panel comercial no significa que la evidencia sea sólida</td></tr>
+   <tr><td><b>PharmGKB</b></td><td><b>Farmacogenómica</b>: gen&#8209;droga&#8209;nivel de evidencia</td><td>Define <b>alelos estrella</b> (*2, *3), que son <b>haplotipos</b>, no una variante suelta: por eso un rsID solo no alcanza. Ej.: CYP2C19 y clopidogrel (metabolizador pobre); CFTR e ivacaftor (el gen de la enfermedad es el blanco terapéutico)</td></tr>
+  </tbody>
+ </table></div>
+</div>
+
+<div class="block">
+ <h4>ChIP&#8209;seq y la crítica a ENCODE</h4>
+ <p><b>ChIP&#8209;seq</b> responde: ¿esta proteína está unida al ADN, y en qué regiones? Anticuerpo específico (con beads magnéticas) → se recupera anticuerpo + proteína + ADN asociado → se secuencia ese ADN → se ve dónde mapea en el genoma.</p>
+ <p>ENCODE consideró “funcional” a un segmento si: se transcribe, tiene una histona modificada, está en cromatina abierta, une un factor de transcripción o tiene un CpG metilado. <b>La crítica</b>: eso describe un <b>estado molecular</b>, no demuestra una <b>función causal</b>. No es lo mismo “presenta características asociadas a actividad” que “cumple una función”.</p>
+</div>
+
+<div class="block">
+ <h4>GWAS: asociación, no causa ⭐</h4>
+ <div class="flow"><span>casos vs. controles</span><i>→</i><span>genotipificación</span><i>→</i><span>control de calidad</span><i>→</i><span>análisis (PLINK)</span><i>→</i><span>asociaciones</span><i>→</i><span>follow&#8209;up</span></div>
+ <ul class="tight" style="margin-top:12px">
+  <li>En la recolección hay que controlar la <b>estratificación poblacional</b> y la admixture: si no, aparecen asociaciones que sólo reflejan diferencias entre poblaciones.</li>
+  <li>El <b>Manhattan plot</b>: cada punto es un SNP ubicado por cromosoma; la altura es la fuerza de la asociación.</li>
+  <li><b>Asociación ≠ causalidad.</b> Un GWAS genera hipótesis; después hay que replicar en otra población (validación biológica) y demostrar el mecanismo (validación funcional), como pasó con C4.</li>
+  <li>Que un gen esté <b>asociado</b> no lo vuelve <b>causante</b>. Una forma de sumar evidencia es la <b>cosegregación</b>: ver si la variante viaja con la enfermedad en varias generaciones de una familia.</li>
+ </ul>
+ <div class="note exam"><h4>Complemento: PRS (no está en tus resúmenes, pero cae en multiple choice)</h4><p style="margin:0">Un <b>score de riesgo poligénico</b> se calcula genotipando SNPs conocidos de un individuo y sumando sus efectos, usando los <b>resultados de los GWAS</b> como pesos. Da un <b>riesgo relativo</b> para un fenotipo común, <b>no</b> diagnostica enfermedades mendelianas. Ésa es siempre la opción correcta: “el PRS usa resultados de GWAS para calcular la puntuación”.</p></div>
+</div>
+`;
+
+SUM.u4=`
+<div class="block">
+ <h4>El caso</h4>
+ <p>Trío familiar: <b>padre + madre + hijo afectado</b> (proband). El chico tiene <b>osteopetrosis</b> y los padres son <b>consanguíneos y asintomáticos</b> → hipótesis de <b>herencia autosómica recesiva</b>: cada padre portador, el hijo con las dos copias alteradas.</p>
+ <div class="flow"><span>ADN</span><i>→</i><span>WES</span><i>→</i><span>FASTQ</span><i>→</i><span>QC</span><i>→</i><span>alineamiento</span><i>→</i><span>SAM</span><i>→</i><span>BAM</span><i>→</i><span>posproceso</span><i>→</i><span>VCF</span><i>→</i><span>anotación funcional</span><i>→</i><span>clínica</span><i>→</i><span>frecuencia</span><i>→</i><span>filtro por herencia</span><i>→</i><span>ACMG</span></div>
+</div>
+
+<div class="block">
+ <h4>¿Por qué exoma?</h4>
+ <p>El exoma es ~<b>1% del genoma</b> (~30 Mb) pero concentra una proporción enorme de las variantes conocidas causantes de enfermedad. Es más barato que WGS y genera muchísimos menos datos.</p>
+ <div class="note"><h4>La trampa favorita del TP</h4><p style="margin:0">Aunque hagas WES vas a encontrar <b>variantes intrónicas</b>: el ADN se corta al azar y las sondas capturan también secuencia vecina al exón (que además es donde están las señales de <b>splicing</b>). Que aparezcan intrónicas no significa que el exoma “falló”.</p></div>
+</div>
+
+<div class="block">
+ <h4>Paso a paso, con la herramienta y la pregunta que responde</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Paso</th><th>Herramienta</th><th>Pregunta que responde</th></tr></thead>
+  <tbody>
+   <tr><td>Datos crudos</td><td>archivos <code>.fq.gz</code>, R1 y R2</td><td>Paired&#8209;end: cada fragmento leído de los dos extremos. Todavía no sé dónde va cada lectura</td></tr>
+   <tr><td>Control de calidad</td><td><b>FastQC</b> + <b>MultiQC</b></td><td>¿Los datos son confiables? Se mira <b>GC content</b> (en exoma no tiene por qué coincidir con el del genoma completo) y <b>duplicación</b> (puede venir de la captura y la amplificación)</td></tr>
+   <tr><td>Referencia</td><td><b>hg19</b>, cromosoma 8</td><td>Se usa sólo el cr. 8 porque ahí está el gen del fenotipo: archivos más chicos. En un análisis real sería todo el genoma (GRCh38)</td></tr>
+   <tr><td>Indexación</td><td><b>BWA</b> index</td><td>No modifica la secuencia: crea archivos auxiliares para buscar rápido</td></tr>
+   <tr><td>Mapeo</td><td><b>BWA MEM</b> → <b>SAM</b></td><td>¿Dónde va cada read? Acá se agregan los <b>read groups</b> (ID, SM, PL) para distinguir padre ≠ madre ≠ hijo</td></tr>
+   <tr><td>Compresión y orden</td><td><b>Samtools</b> → <b>BAM</b> + <b>BAI</b></td><td>SAM es texto y pesa; BAM es binario. Sorting por posición, indexing para acceder rápido a una región</td></tr>
+   <tr><td>Posprocesamiento</td><td>filtrado de pares + <b>deduplicación</b></td><td>Se conservan pares bien mapeados y se eliminan duplicados de PCR: si no, una sola molécula amplificada muchas veces <b>infla</b> la evidencia de una variante y distorsiona la frecuencia alélica</td></tr>
+   <tr><td>Variant calling</td><td><b>FreeBayes</b> (joint calling del trío) → <b>VCF</b></td><td>¿Qué difiere de la referencia? SNPs, indels, MNPs, eventos complejos. Analizar los tres juntos mejora la interpretación</td></tr>
+   <tr><td>Normalización</td><td><b>bcftools norm</b></td><td>Separa multialélicas y normaliza indels (<b>left alignment</b>) para poder cruzarlos con bases de datos</td></tr>
+   <tr><td>Anotación funcional</td><td><b>SnpEff</b></td><td>¿Qué significa? Gen, región, efecto (missense, stop_gained, frameshift, splice), <b>IMPACT</b> y <b>HGVS</b></td></tr>
+   <tr><td>Filtrado</td><td><b>SnpSift</b></td><td>Herencia + impacto + frecuencia + evidencia clínica</td></tr>
+  </tbody>
+ </table></div>
+</div>
+
+<div class="block">
+ <h4>Leer un VCF</h4>
+ <div class="kv">
+  <dt>Columnas</dt><dd><code>CHROM</code> <code>POS</code> <code>REF</code> <code>ALT</code> <code>QUAL</code> + los datos de cada muestra.</dd>
+  <dt>Genotipos</dt><dd><code>0/0</code> homocigota de referencia · <code>0/1</code> heterocigota · <code>1/1</code> homocigota del alternativo.</dd>
+  <dt>Modelo recesivo</dt><dd>padre <code>0/1</code> + madre <code>0/1</code> + hijo <code>1/1</code>.</dd>
+  <dt>QUAL</dt><dd><b>Confianza en el llamado</b>, no peligrosidad. <b>QUAL ≠ impacto biológico.</b></dd>
+ </div>
+ <div class="note warn"><h4>¿Ya encontramos la mutación? No.</h4><p style="margin:0">Después del variant calling tenés muchísimas variantes y todavía no sabés si están en un gen, cuál, si cambian una proteína, si son frecuentes o si alguien ya las asoció a una enfermedad. Para eso hace falta <b>anotar e interpretar</b>.</p></div>
+</div>
+
+<div class="block">
+ <h4>IMPACT de SnpEff y nomenclatura HGVS</h4>
+ <div class="deck2">
+  <div class="mini"><b>HIGH</b><p>Potencialmente muy disruptivo: stop_gained, frameshift, ciertos splice.</p></div>
+  <div class="mini"><b>MODERATE</b><p>Posible efecto funcional importante: típicamente missense.</p></div>
+  <div class="mini"><b>LOW</b><p>Efecto probablemente menor (p. ej. sinónimas).</p></div>
+  <div class="mini"><b>MODIFIER</b><p>Difícil de interpretar o de menor impacto (intrónicas, intergénicas).</p></div>
+ </div>
+ <p style="margin-top:12px"><b>HGVS:</b> <code>c.290G&gt;A</code> = en la posición 290 del ADN codificante, una G cambia por A. <code>p.Trp97*</code> = en el aminoácido 97 (triptófano) aparece un codón de parada → proteína truncada.</p>
+</div>
+
+<div class="block">
+ <h4>Filtrado final y desenlace</h4>
+ <p>Se combinan cuatro cosas: <b>herencia</b> (proband 1/1, padres 0/1) + <b>impacto</b> (HIGH o MODERATE) + <b>frecuencia</b> (&lt;1%) + <b>evidencia clínica</b> (ClinVar). Queda una candidata: <b>CA2</b>, <code>p.Trp97*</code> (stop&#8209;gained) → deficiencia de anhidrasa carbónica II → osteopetrosis con acidosis tubular renal, que es exactamente el fenotipo.</p>
+ <div class="note"><h4>Sobre las frecuencias</h4><p style="margin:0">Una variante causal de enfermedad rara debería ser rara en la población (1000 Genomes da AF global y por población: EUR, AFR, AMR, EAS, SAS). Pero <b>AF = 0 no prueba</b> que no exista: puede que no se haya observado <i>o</i> que no haya cruzado bien con la base (típico en indels representados distinto).</p></div>
+ <p style="margin-top:10px">Tendencia esperable: las variantes de <b>mayor impacto</b> tienden a ser <b>menos frecuentes</b>, porque la <b>selección purificadora</b> las elimina. Es una tendencia poblacional, no una regla para cada variante.</p>
+</div>
+
+<div class="block">
+ <h4>Las diferencias que no podés confundir</h4>
+ <div class="kv">
+  <dt>Mapeo</dt><dd>¿Dónde está mi lectura?</dd>
+  <dt>Variant calling</dt><dd>¿Qué diferencia hay entre mi muestra y la referencia?</dd>
+  <dt>Anotación</dt><dd>¿Qué significa esa diferencia?</dd>
+  <dt>Filtrado</dt><dd>¿Cuáles son compatibles con la enfermedad?</dd>
+  <dt>Interpretación</dt><dd>¿Qué evidencia tengo para decir que es patogénica?</dd>
+ </div>
+ <p class="muted" style="margin-top:8px">Para el parcial importa explicar <b>por qué se pasa de un archivo al siguiente</b>, no memorizar comandos.</p>
+</div>
+`;
+
+SUM.u5=`
+<div class="block">
+ <h4>De dónde salen los datos</h4>
+ <p>Se arranca directamente desde <b>VCF + pedigrí</b> (la primera mitad ya estaba hecha). Los datos base son de una familia real sana, <b>CEPH/Utah 1463</b>: NA12891 (padre), NA12892 (madre), NA12878 (hija). Sobre eso los docentes agregaron artificialmente una variante patogénica real y publicada (<b>spike&#8209;in</b>). El ejercicio es literalmente buscar <b>una aguja en un pajar</b>.</p>
+ <div class="flow"><span>VCF + .tfam</span><i>→</i><span>normalización</span><i>→</i><span>SnpEff</span><i>→</i><span>ClinVar</span><i>→</i><span>1000 Genomes</span><i>→</i><span>filtro herencia+frecuencia+impacto</span><i>→</i><span>candidatas</span><i>→</i><span>ACMG/AMP</span></div>
+</div>
+
+<div class="block">
+ <h4>El pedigrí y los patrones de herencia ⭐</h4>
+ <p>El <code>.tfam</code> trae familia, individuo, padre, madre, sexo y fenotipo. Códigos: <b>fenotipo</b> 1 = no afectado, 2 = afectado; <b>sexo</b> 1 = macho, 2 = hembra.</p>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Patrón</th><th>Hija</th><th>Padre</th><th>Madre</th></tr></thead>
+  <tbody>
+   <tr><td><b>Autosómico recesivo</b></td><td class="mono">1/1</td><td class="mono">0/1</td><td class="mono">0/1</td></tr>
+   <tr><td><b>Dominante heredado del padre</b></td><td class="mono">0/1</td><td class="mono">0/1</td><td class="mono">0/0</td></tr>
+   <tr><td><b>Dominante heredado de la madre</b></td><td class="mono">0/1</td><td class="mono">0/0</td><td class="mono">0/1</td></tr>
+   <tr><td><b>Dominante de novo</b></td><td class="mono">0/1</td><td class="mono">0/0</td><td class="mono">0/0</td></tr>
+   <tr><td><b>Dominante no heredada</b> (hija sana)</td><td class="mono">0/0</td><td class="mono">0/1</td><td class="mono">0/1</td></tr>
+  </tbody>
+ </table></div>
+ <p style="margin-top:10px">En este VCF los genotipos vienen <b>phased</b> (<code>0|1</code>): la barra vertical indica fase. Para el filtro no importa distinguir <code>0|1</code> de <code>1|0</code>, así que se normalizan a <code>0/1</code>.</p>
+ <div class="note"><h4>Por qué el pedigrí filtra tanto</h4><p style="margin:0">Si encontrás padre <code>0/0</code>, madre <code>0/0</code> e hija <code>1/1</code>, esa variante <b>no encaja</b> con un recesivo heredado: la hija no pudo recibir el alelo alternativo de ninguno de los dos.</p></div>
+</div>
+
+<div class="block">
+ <h4>GRCh38: el detalle que arruina todo si lo pasás por alto</h4>
+ <p>El TP2 trabaja en <b>GRCh38</b>, mientras el TP1 usaba <b>GRCh37/hg19</b>. Las <b>coordenadas cambian</b> entre versiones: el VCF, la referencia FASTA, SnpEff, ClinVar y 1000 Genomes tienen que ser <b>todos de la misma versión</b>. La referencia se descarga además porque hace falta para normalizar (sobre todo indels).</p>
+</div>
+
+<div class="block">
+ <h4>Anotar: qué agrega cada capa</h4>
+ <div class="kv">
+  <dt>bcftools norm</dt><dd>Separa multialélicas, normaliza y alinea indels a la izquierda → representación consistente para cruzar con bases externas.</dd>
+  <dt>SnpEff</dt><dd>Gen, ubicación, efecto (missense, stop_gained, frameshift, splice), <b>IMPACT</b> y <b>HGVSp</b>.</dd>
+  <dt>ClinVar</dt><dd>¿Ya fue reportada? ¿Qué enfermedad? ¿Qué clasificación y qué <b>review status</b>?</dd>
+  <dt>1000 Genomes</dt><dd>Frecuencia: <code>AF</code> global y <code>EUR_AF</code>, <code>AFR_AF</code>, <code>AMR_AF</code>, <code>EAS_AF</code>, <code>SAS_AF</code>.</dd>
+  <dt>UniProt</dt><dd>La proteína: ¿la variante cae en un <b>dominio funcional</b> conocido?</dd>
+  <dt>VarSome</dt><dd>Segunda mirada que integra fuentes y da una clasificación ACMG automática — para <b>comparar</b> con tu razonamiento, no para reemplazarlo.</dd>
+ </div>
+ <div class="note warn"><h4>Detalle técnico que preguntan</h4><p style="margin:0">Antes de anotar con 1000 Genomes se <b>eliminan los campos AF/AC/AN propios</b> del VCF. Si no, cuando una variante no encuentra coincidencia podrías confundir la frecuencia de <b>tu trío</b> con la frecuencia <b>poblacional</b>.</p></div>
+</div>
+
+<div class="block">
+ <h4>Por qué casi todas las variantes son LOW/MODIFIER y casi ninguna está en ClinVar</h4>
+ <p>Una persona sana tiene una enorme cantidad de variantes respecto de la referencia: la mayoría no afecta genes importantes, está en regiones no codificantes o es tolerada. Una variante que destruyera genes esenciales difícilmente se mantendría en la población. Y ClinVar sólo reúne variantes con relevancia clínica <b>estudiada y reportada</b>, así que “no reportado” es lo normal.</p>
+ <div class="note warn"><h4>Tres cosas distintas</h4><p style="margin:0"><b>IMPACT ≠ patogenicidad</b> (SnpEff predice efecto funcional, no causalidad). <b>Raro ≠ patogénico.</b> <b>QUAL ≠ impacto.</b></p></div>
+</div>
+
+<div class="block">
+ <h4>El orden correcto del razonamiento</h4>
+ <ol class="tight">
+  <li>¿Cómo se hereda? (pedigrí)</li>
+  <li>¿Qué impacto funcional tiene? (SnpEff)</li>
+  <li>¿Qué tan frecuente es? (1000 Genomes / gnomAD)</li>
+  <li>¿Hay evidencia clínica previa? (ClinVar)</li>
+  <li>¿El gen tiene relación con la enfermedad? (ClinGen, OMIM, UniProt)</li>
+  <li>¿Toda la evidencia junta alcanza para llamarla patogénica? (ACMG/AMP)</li>
+ </ol>
+ <p class="muted">No es “veo una HIGH y digo que es la causante”.</p>
+</div>
+
+<div class="block">
+ <h4>Criterios ACMG/AMP ⭐</h4>
+ <p>Cinco categorías: <b>Patogénica · Probablemente patogénica · VUS · Probablemente benigna · Benigna</b>.</p>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Criterio</th><th>Peso</th><th>Qué dice</th><th>De dónde sale en el TP</th></tr></thead>
+  <tbody>
+   <tr><td><b>PVS1</b></td><td>Muy fuerte</td><td>Variante de pérdida de función (nonsense, frameshift, splicing) en un gen donde la LoF es mecanismo conocido de enfermedad</td><td>SnpEff: HIGH + stop_gained/frameshift</td></tr>
+   <tr><td><b>PS1 / PM5</b></td><td>Fuerte / Moderado</td><td>PS1: la misma variante ya fue reportada patogénica. PM5: otra variante patogénica afecta el mismo codón</td><td>ClinVar</td></tr>
+   <tr><td><b>PM2</b></td><td>Moderado</td><td>Ausente o extremadamente rara en poblaciones de referencia</td><td>1000 Genomes / gnomAD</td></tr>
+   <tr><td><b>PP1</b></td><td>De apoyo</td><td><b>Cosegrega</b> con la enfermedad en la familia (hijo 1/1, padres 0/1)</td><td>Pedigrí</td></tr>
+   <tr><td><b>PP4</b></td><td>De apoyo</td><td>El fenotipo del paciente coincide fuertemente con la enfermedad del gen</td><td>Clínica + OMIM</td></tr>
+   <tr><td><b>BA1 / BS1</b></td><td>En contra</td><td>Demasiado frecuente para ser compatible con una enfermedad rara → evidencia de que <b>no</b> es patogénica</td><td>1000 Genomes / gnomAD</td></tr>
+  </tbody>
+ </table></div>
+ <p style="margin-top:10px">En el TP1, PVS1 + PM2 + PP1 + PP4 → <b>patogénica</b>. No se pudo usar PS1 porque ClinVar no tenía clasificación previa para esa variante.</p>
+</div>
+
+<div class="block">
+ <h4>La frase que resume el TP</h4>
+ <div class="note exam"><p style="margin:0">“Tengo miles de variantes porque cada individuo presenta mucha variabilidad genética. Uso el <b>pedigrí</b> para determinar qué patrón de herencia debería tener la variante causal. Después agrego información sobre su <b>impacto funcional</b>, su <b>frecuencia poblacional</b> y la <b>evidencia clínica</b>. Al combinar todos esos datos reduzco las variantes a unas pocas candidatas y finalmente evalúo, con los criterios <b>ACMG/AMP</b>, si alguna tiene suficiente evidencia para considerarla patogénica.”</p></div>
+</div>
+`;
+
+SUM.u6=`
+<div class="block">
+ <h4>Qué es el cfDNA y por qué importa</h4>
+ <p>Revisión de Bianchi y Chiu (NEJM, 2018). El <b>ADN libre circulante</b> son fragmentos de ADN que circulan en el plasma, fuera de células. En el embarazo el plasma materno tiene cfDNA <b>materno</b> y cfDNA <b>placentario</b> (sobre todo del trofoblasto), que se libera durante la fusión y apoptosis normales de los citotrofoblastos y sincitiotrofoblastos.</p>
+ <div class="note warn"><h4>La idea central de todo el paper</h4><p style="margin:0">Se lo llama “ADN fetal” pero en realidad viene de la <b>placenta</b>, y el genoma placentario <b>no siempre coincide</b> con el fetal. Por eso es un <b>test de tamizaje (screening), no diagnóstico</b>: todo positivo se confirma con una prueba invasiva.</p></div>
+</div>
+
+<div class="block">
+ <h4>Fracción fetal ⭐</h4>
+ <p>Es la proporción del cfDNA total del plasma que proviene de la placenta. <b>Aumenta con la edad gestacional</b>, y por eso el test se hace desde la <b>semana 10</b>: recién ahí suele haber suficiente ADN placentario para un resultado informativo. Si es demasiado baja, el resultado es un <b>“no call”</b> (no concluyente), que <b>no</b> debe leerse como normal: a veces se asocia a una alteración cromosómica.</p>
+ <p><b>Causas de fracción fetal baja:</b> obesidad materna (más apoptosis de adipocitos → más cfDNA <i>materno</i>, así que baja la <i>proporción</i> aunque el ADN placentario no haya bajado), embarazo muy temprano, reproducción asistida, gestación múltiple, heparina, trastornos tromboembólicos, déficit de vitamina B12, triploidía digínica.</p>
+ <p class="muted">La precisión no depende sólo de la fracción fetal: también de cuántas moléculas se secuenciaron, la cobertura, el contenido GC de cada cromosoma, la presencia de CNVs, la calidad de la muestra y los algoritmos bioinformáticos.</p>
+</div>
+
+<div class="block">
+ <h4>Los dos métodos</h4>
+ <div class="deck2">
+  <div class="mini"><b>Secuenciación aleatoria (genome&#8209;wide)</b><p>Se secuencian al azar millones de fragmentos, se alinean contra la referencia, se cuenta cuántos vienen de cada cromosoma y se compara esa proporción con embarazos euploides. En una trisomía 21 hay un <b>pequeño exceso</b> de fragmentos del cr. 21. No se secuencia un cromosoma fetal aislado: se detecta un <b>desbalance cuantitativo</b> mínimo.</p></div>
+  <div class="mini"><b>Secuenciación dirigida</b><p>Sólo cromosomas o regiones de interés (13, 18, 21). Un enfoque amplifica y secuencia <b>SNPs informativos</b> y compara las <b>proporciones alélicas</b>: en un locus heterocigota se espera ~1:1; una copia extra desvía esa relación.</p></div>
+ </div>
+ <p style="margin-top:10px" class="muted">Es el mejor ejemplo de que la secuenciación puede usarse de manera <b>cuantitativa</b> (contar), no sólo para leer letras.</p>
+</div>
+
+<div class="block">
+ <h4>Rendimiento: sensibilidad, especificidad y VPP</h4>
+ <div class="kv">
+  <dt>Sensibilidad</dt><dd>De los fetos que <b>sí</b> tienen la alteración, ¿cuántos detecto? (T21 ~97%, T18 ~93%, T13 ~95%)</dd>
+  <dt>Especificidad</dt><dd>De los que <b>no</b> la tienen, ¿cuántos dan negativo? (~99,7&#8209;99,9%)</dd>
+  <dt>VPP</dt><dd>Si dio positivo, ¿qué probabilidad hay de que sea real? <b>Depende de la prevalencia</b>: en alto riesgo T21 ~91%; en bajo riesgo baja a ~82% (T21), ~37% (T18) y ~49% (T13), aunque sensibilidad y especificidad sean iguales.</dd>
+ </div>
+ <p style="margin-top:10px">Contra el screening tradicional (marcadores séricos + translucencia nucal + edad materna) el cfDNA tiene más sensibilidad, menos falsos positivos (menos de una décima parte) y mejor VPP: eso redujo entre <b>40% y 76%</b> los procedimientos invasivos (amniocentesis, biopsia corial).</p>
+</div>
+
+<div class="block">
+ <h4>Por qué falla cuando falla</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Falsos positivos</th><th>Falsos negativos</th></tr></thead>
+  <tbody>
+   <tr>
+    <td><ul class="tight" style="margin:0">
+      <li><b>Mosaicismo placentario confinado</b> (la placenta es aneuploide y el feto no) — típico en T13 y monosomía X</li>
+      <li>Mosaicismo fetal</li>
+      <li><b>Gemelo evanescente</b> (su placenta sigue liberando cfDNA)</li>
+      <li>Alteraciones cromosómicas <b>maternas</b> (mosaicismos 45,X o 47,XXX, CNVs benignas). Dos tercios de los casos discordantes con seguimiento se explicaron por hallazgos maternos</li>
+      <li><b>Cáncer materno</b> (ADN tumoral con múltiples desbalances), leiomiomas uterinos</li>
+      <li>Trasplante de médula de donante masculino → aparente discordancia de sexo</li>
+    </ul></td>
+    <td><ul class="tight" style="margin:0">
+      <li>Fracción fetal baja</li>
+      <li>Obesidad materna</li>
+      <li>Gestación múltiple</li>
+      <li>Triploidía</li>
+      <li>Mosaicismo fetal</li>
+      <li><b>Placenta euploide con feto aneuploide</b> (mosaicismo placentario “inverso”)</li>
+      <li>Mala calidad del cfDNA</li>
+    </ul></td>
+   </tr>
+  </tbody>
+ </table></div>
+ <p style="margin-top:10px"><b>Confirmación:</b> para T13 o monosomía X conviene <b>amniocentesis</b> (representa mejor al feto); para T18 o T21 puede alcanzar la <b>biopsia corial</b> (analiza placenta). Un resultado <b>negativo</b> no descarta todo: las trisomías comunes son sólo ~un tercio de las anomalías que ve un cariotipo o un microarray.</p>
+</div>
+`;
+
+var CARDS=[
+{u:"u0",q:"¿Qué diferencia hay entre genotipo y fenotipo?",a:"<b>Genotipo:</b> la secuencia de ADN de la persona (nuclear + mitocondrial).<br><b>Fenotipo:</b> todas las características del organismo, no sólo las visibles: ser celíaco, el metabolismo, la susceptibilidad a enfermedades, la respuesta a fármacos. Depende también del ambiente, la historia de vida y la epigenética."},
+{u:"u0",q:"¿Qué proporción del genoma humano codifica proteínas y cuántos genes hay?",a:"Sólo ~<b>2&#8209;3%</b> codifica proteínas (los exones son ~1% del genoma). Son ~<b>23.000</b> genes codificantes, distribuidos de forma desigual entre cromosomas."},
+{u:"u0",q:"¿Por qué varían tanto de tamaño los genes humanos?",a:"Principalmente por la <b>longitud de los intrones</b>. Los exones tienen tamaños relativamente parecidos (~200 pb en promedio)."},
+{u:"u0",q:"¿Cómo puede un genoma con 23.000 genes generar muchas más proteínas?",a:"<ul><li><b>Splicing alternativo</b> (~95% de los genes multiexónicos)</li><li>Promotores alternativos</li><li><b>Edición de ARN</b> (A→I que se lee como G), a veces tejido-específica</li><li>Modificaciones postraduccionales</li></ul>Excepción especial: el sistema inmune genera 10⁸–10¹⁰ anticuerpos por <b>recombinación del ADN</b>."},
+{u:"u0",q:"¿Qué es un pseudogén y por qué algunos no tienen intrones?",a:"Es una secuencia derivada de un gen funcional que acumuló mutaciones y ya no produce proteína funcional. Los que se originaron por <b>retrotranscripción de un ARNm</b> carecen de intrones, porque el ARNm ya estaba procesado."},
+{u:"u0",q:"LINE vs. SINE",a:"<b>LINE</b> (~21% del genoma): 1&#8209;5 kb, codifican su propia transcriptasa reversa, se replican de forma autónoma (L1 ~20.000 copias).<br><b>SINE</b> (~13%): 200&#8209;300 pb, cientos de miles de copias, <b>no</b> codifican transcriptasa reversa (usan la de los LINE). El más común es <i>Alu</i>."},
+{u:"u0",q:"Retrotransposones vs. transposones de ADN",a:"<b>Clase I (retrotransposones):</b> se mueven con un intermediario de <b>ARN</b>.<br><b>Clase II (transposones de ADN):</b> sin intermediario de ARN; codifican <b>transposasa</b> y se mueven por cortar y pegar o copiar y pegar."},
+{u:"u0",q:"¿Cómo silencia la célula a los elementos transponibles?",a:"Con <b>metilación del ADN</b> y <b>ARN pequeños interferentes</b>. El problema es que el silenciamiento puede extenderse a genes vecinos, y las enfermedades con hipometilación pueden reactivarlos."},
+{u:"u0",q:"¿Qué evidencias apoyan la teoría endosimbiótica?",a:"Mitocondrias y cloroplastos tienen <b>ADN circular sin histonas</b>, ribosomas de tipo procariota, maquinaria propia de síntesis proteica, se dividen de forma parcialmente independiente y sus secuencias se parecen a bacterias actuales (mitocondria ~ Rickettsia; cloroplasto ~ cianobacteria)."},
+{u:"u0",q:"¿Qué es un ORF y en cuántos marcos de lectura se busca?",a:"Un <b>marco abierto de lectura</b>: región que empieza con un codón de inicio (ATG) y termina en un codón stop; es una posible región codificante. Se busca en <b>6 marcos</b>: 3 en cada hebra."},
+{u:"u0",q:"¿Por qué es más fácil identificar genes en procariotas?",a:"Genomas más chicos, casi sin espacios intergénicos, genes continuos <b>sin intrones</b> (~90% del genoma de <i>E. coli</i> es codificante) y secuencias conservadas como los sitios de unión al ribosoma."},
+
+{u:"u1",q:"Genética vs. genómica",a:"La <b>genética</b> estudia genes individuales, su función y su herencia. La <b>genómica</b> estudia el genoma completo y las relaciones entre todos sus elementos, para entender su influencia combinada."},
+{u:"u1",q:"¿Qué es la genómica funcional y por qué es el concepto real de la materia?",a:"Estudia <b>cómo la información genética se convierte en función biológica</b>: qué genes se expresan, cuándo, dónde y en qué cantidad. El genoma es casi igual en todas las células; lo que distingue una neurona de un hepatocito es la <b>regulación de la expresión</b>."},
+{u:"u1",q:"¿Qué es el transcriptoma?",a:"El conjunto de <b>todos los ARN</b> expresados por una célula en un <b>momento</b> y una <b>condición ambiental</b> determinados. Es dinámico e incluye ARNm y no codificantes (lncRNA, miRNA)."},
+{u:"u1",q:"¿Por qué las proteínas no se pueden estudiar por NGS?",a:"Porque están formadas por <b>aminoácidos</b>, no por nucleótidos. Se estudian por <b>espectrometría de masas</b> (secuencia) y por ELISA, Western blot o MS cuantitativa (abundancia, que suele ser lo más relevante)."},
+{u:"u1",q:"Para ADN, ARN y proteínas: ¿qué es lo más importante de estudiar en cada uno?",a:"<b>ADN:</b> la secuencia (es estable).<br><b>ARN:</b> secuencia y sobre todo <b>abundancia</b> (es dinámico).<br><b>Proteínas:</b> sobre todo la <b>abundancia</b>; la secuencia se obtiene por MS."},
+{u:"u1",q:"Metagenómica vs. microbioma",a:"<b>Metagenómica:</b> el estudio del material genético de una comunidad completa tomado directamente del ambiente, <b>sin cultivar</b>.<br><b>Microbioma:</b> el conjunto de microorganismos de un ambiente (intestino, piel) junto con su información genética."},
+{u:"u1",q:"¿Qué significa que una ómica sea “discovery-driven”?",a:"Que no parte de una hipótesis previa: explora grandes volúmenes de datos buscando diferencias o patrones desconocidos y, a partir de ellos, <b>genera</b> hipótesis que después se validan.<br>datos masivos → diferencias → hipótesis → validación."},
+{u:"u1",q:"Ventaja principal del enfoque libre de hipótesis",a:"Reduce el <b>sesgo del investigador</b>: las hipótesis clásicas se construyen sobre lo que ya se conoce y lo que el científico considera importante. Permite descubrir relaciones inesperadas. No reemplaza al método científico: lo complementa."},
+{u:"u1",q:"Validación TÉCNICA: ¿qué pregunta responde y cómo se hace?",a:"<b>¿La medición es correcta o es un artefacto del método?</b> Se confirma el resultado (microarray, RNA-seq, NGS) con una <b>técnica independiente</b>: RT-qPCR, ddPCR, secuenciación Sanger. Evalúa sensibilidad, especificidad, precisión, robustez, límite de detección."},
+{u:"u1",q:"Validación BIOLÓGICA: ¿qué pregunta responde?",a:"<b>¿El resultado se repite en muestras independientes o fue casualidad de esa muestra, lote o individuo?</b> Se usan réplicas biológicas o una cohorte independiente. En GWAS: replicar la asociación en otra población."},
+{u:"u1",q:"Validación FUNCIONAL: ¿qué pregunta responde y con qué técnicas?",a:"<b>¿El gen o variante es realmente responsable del fenotipo?</b> (causalidad, no correlación). Knockout, knockdown, sobreexpresión, edición con CRISPR, ensayos reporteros (luciferasa), modelos animales, células iPSC del paciente."},
+{u:"u1",q:"Caso clínico: variante de novo con pérdida de función en un gen sin enfermedad descrita. ¿Cómo validás en 3 niveles?",a:"<b>Técnica:</b> Sanger en la niña y en ambos padres (confirma la variante y su carácter de novo, descarta error o mezcla de muestras).<br><b>Biológica:</b> buscar otros pacientes no emparentados con variantes en el mismo gen y fenotipo parecido (GeneMatcher): la recurrencia es lo que convierte un candidato en diagnóstico.<br><b>Funcional:</b> modelar en pez cebra, ratón o iPSC y ver si la falta del gen reproduce el defecto y si reintroducirlo lo rescata."},
+{u:"u1",q:"Trabajo de Pääbo: ¿por qué secuenciaron primero el ADN mitocondrial?",a:"Porque está presente en <b>miles de copias por célula</b>, así que era mucho más probable recuperarlo de restos fósiles con ADN degradado y contaminado. Después, con mejores tecnologías, lograron el genoma nuclear completo."},
+{u:"u1",q:"C4 y esquizofrenia: ¿por qué estudiar cerebro si la variante está en todas las células?",a:"Porque el ADN es el mismo en todas las células pero la <b>expresión</b> no. Había que demostrar que C4 era funcionalmente relevante <b>en el cerebro</b>: se expresa en neuronas, se localiza en las sinapsis, está aumentado en pacientes y los ratones knockout tienen menos poda sináptica."},
+{u:"u1",q:"¿Qué diferencia hay entre heredar una variante y tener una mutación nueva?",a:"En fibrosis quística se heredan <b>dos alelos patogénicos de CFTR</b> (uno de cada padre); con uno solo se es portador sano. En enfermedades complejas como la esquizofrenia se heredan variantes de <b>susceptibilidad</b> que aumentan el riesgo pero por sí solas no bastan."},
+
+{u:"u2",q:"¿Cuál fue la metodología del Proyecto Genoma Humano público?",a:"<b>Hierarchical (clone-by-clone) shotgun:</b> genoma → fragmentos grandes clonados en <b>BAC</b> → se ubican con STS, fingerprinting y FISH → <b>mapa físico</b> → cada BAC se refragmenta → Sanger → ensamblado.<br>Primero ordeno, después secuencio."},
+{u:"u2",q:"¿Cuál fue la metodología de Celera y por qué fue más rápida?",a:"<b>Whole-genome shotgun:</b> fragmentación masiva directa → secuenciación → algoritmos buscan solapamientos.<br>Fue más rápida porque se salteó gran parte del mapeo físico previo, apostó a la capacidad computacional y además <b>usó los datos públicos del HGP</b> (27,27 M de lecturas propias + públicas = &gt;43 M)."},
+{u:"u2",q:"¿Qué método de lectura usaron el HGP y Celera?",a:"Los <b>dos</b> usaron secuenciación de <b>Sanger automatizada</b> (ddNTP fluorescentes). Lo que cambiaba era la estrategia de fragmentación, organización y ensamblado, no la química."},
+{u:"u2",q:"¿A quién se secuenció en el Proyecto Genoma Humano?",a:"A <b>20 voluntarios</b> mayores de 18 años sin ciertos tratamientos. ~70% de la secuencia final vino de <b>un solo individuo</b> y el 30% de los otros 19. No es el genoma de una persona ni un “genoma promedio”."},
+{u:"u2",q:"¿Qué pasó en 2004 con el genoma humano?",a:"<i>Finishing the euchromatic sequence</i>: ~2,85 Gb, sólo <b>341 gaps</b>, ~99% de la <b>eucromatina</b>, error ~1 cada 100.000 bases y estimación de genes ajustada a 20.000&#8209;25.000. Seguían faltando centrómeros, regiones pericentroméricas y subteloméricas, duplicaciones segmentarias y brazos cortos acrocéntricos."},
+{u:"u2",q:"¿Por qué la heterocromatina era tan difícil de secuenciar?",a:"No porque esté compacta (al extraer el ADN esa compactación se pierde), sino porque está llena de <b>secuencias altamente repetitivas</b> casi idénticas: con reads cortas es imposible saber en qué copia va cada fragmento. Es un problema de <b>ensamblaje</b>."},
+{u:"u2",q:"T2T 2022: ¿qué logró y qué le faltó?",a:"Ensambló de telómero a telómero los <b>22 autosomas y el X</b>, agregando o corrigiendo ~200 Mb (centrómeros, satélites, brazos acrocéntricos), combinando <b>PacBio HiFi + Nanopore ultralong</b>. Faltó el <b>cromosoma Y</b> porque usaron la línea CHM13 (mola hidatidiforme) con cariotipo <b>46,XX</b>."},
+{u:"u2",q:"¿Por qué el cromosoma Y fue el último y cuándo se completó?",a:"En <b>2023</b> con la muestra HG002 (~62,46 Mb, +30 Mb respecto de GRCh38). Es difícil por su arquitectura repetitiva: repeticiones en tándem, grandes palíndromos, duplicaciones segmentarias, regiones amplicónicas y heterocromatina. Las long reads fueron esenciales."},
+{u:"u2",q:"Secuenciar vs. anotar",a:"<b>Secuenciar:</b> determinar el orden de A, T, C y G.<br><b>Anotar:</b> agregarle significado biológico: dónde están los genes, exones, intrones, promotores, sitios de splicing, y qué función podrían cumplir."},
+{u:"u2",q:"¿Por qué distintas bases reportan distinto número de genes humanos?",a:"Porque GENCODE, Ensembl, RefSeq y CHESS parten de la misma secuencia pero usan <b>criterios, algoritmos y evidencias de anotación distintos</b> para decidir qué es un gen y cómo anotar sus transcriptos."},
+{u:"u2",q:"¿Se puede asignar función a un gen sin estudiar su proteína?",a:"Sí, por <b>anotación funcional predictiva</b>: homología con genes bien caracterizados de otras especies, dominios proteicos, motivos, conservación evolutiva, familias génicas, expresión tisular. No tiene el mismo peso que la evidencia experimental y debería confirmarse."},
+{u:"u2",q:"¿Qué es la secuenciación por síntesis?",a:"Determinar la secuencia de una molécula <b>mientras una ADN polimerasa sintetiza la cadena complementaria</b>, detectando qué nucleótido se incorpora en cada paso. La usan 454, Ion Torrent, Illumina y PacBio. <b>Nanopore no</b>."},
+{u:"u2",q:"Pirosecuenciación (454): ¿cómo detecta?",a:"Un solo tipo de dNTP por ciclo. Si se incorpora, libera <b>pirofosfato (PPi)</b> → cascada enzimática → <b>luz</b>. Puede haber ciclos sin señal. Problema: <b>homopolímeros</b> (hay que inferir cuántas bases se incorporaron por la intensidad)."},
+{u:"u2",q:"Ion Torrent: ¿cómo detecta?",a:"También un dNTP por ciclo, pero no detecta luz: la incorporación libera <b>H⁺</b> y se mide un <b>cambio de potencial</b>/pH. Igual que 454, tiene problemas con homopolímeros."},
+{u:"u2",q:"Illumina: explicá el fundamento",a:"Fragmentación + adaptadores (<b>tagmentación</b>) → library → <b>flow cell</b> con oligos complementarios → <b>PCR puente</b> → <b>clusters</b> de copias idénticas (amplifican la señal). Cada ciclo: <b>incorporación</b> de una base (los 4 dNTP presentes, con fluoróforo y <b>terminador reversible</b>) → <b>imaging</b> con láser → <b>cleavage</b> del fluoróforo y del bloqueo del 3'OH."},
+{u:"u2",q:"¿Por qué Illumina maneja mejor los homopolímeros?",a:"Porque el <b>terminador reversible</b> obliga a incorporar <b>una sola base por ciclo</b>: seis A seguidas se leen como una A en cada uno de seis ciclos, en vez de inferir la cantidad a partir de la intensidad de una única señal."},
+{u:"u2",q:"¿Qué comparten las tecnologías de 2ª generación?",a:"Secuenciación por síntesis, enorme cantidad de reacciones <b>en paralelo</b> y microfluídica con ciclos de agregado y lavado. Se diferencian en <b>cómo detectan</b> la incorporación: PPi/luz, H⁺/potencial o fluorescencia + terminadores reversibles."},
+{u:"u2",q:"¿Para qué surgieron las tecnologías de tercera generación?",a:"Para superar las limitaciones de las reads cortas: regiones repetitivas, ensamblados de novo difíciles y la necesidad de amplificación previa (las polimerasas introducen errores). Se basan en <b>single molecule sequencing</b> y dan <b>lecturas largas</b>."},
+{u:"u2",q:"PacBio SMRT: ¿cómo funciona?",a:"Tercera generación + molécula individual + <b>secuenciación por síntesis</b>. Una polimerasa y un molde en un pocillo <b>ZMW</b>; se detecta la fluorescencia de cada base <b>en tiempo real</b>. Con <b>hairpins</b> el fragmento se circulariza y se lee varias veces → <b>secuencia consenso</b> de alta precisión."},
+{u:"u2",q:"Oxford Nanopore: ¿cómo funciona?",a:"Tercera generación + molécula individual + <b>lectura directa</b> (no es por síntesis). Una hebra atraviesa un <b>nanoporo</b> en una membrana y altera la <b>corriente iónica</b> de forma característica; esos cambios se convierten en secuencia. Reads larguísimas, equipo portátil y datos en tiempo real."},
+{u:"u2",q:"¿Qué contiene un FASTQ y por qué cae la calidad al final?",a:"Identificador + <b>secuencia</b> + <b>calidad de cada base</b>. La calidad cae hacia el final porque las polimerasas del cluster se <b>desincronizan</b>: unas moléculas van adelantadas y otras atrasadas, la señal se vuelve difusa y el base calling menos confiable."},
+{u:"u2",q:"FASTA vs. FASTQ",a:"<b>FASTA:</b> identificador + secuencia (se usa para el genoma de referencia).<br><b>FASTQ:</b> identificador + secuencia + <b>calidad por base</b> (es lo que devuelve el secuenciador)."},
+{u:"u2",q:"¿Qué es la profundidad de cobertura y por qué importa?",a:"Cuántas reads independientes cubren una posición (30X = leída ~30 veces en promedio). Importa porque las lecturas son un <b>muestreo</b>: con 2 reads podrías llamar G/G por azar; con 100 reads (~50 A / 50 G) tenés evidencia sólida de heterocigosis. También distingue variante real de error de secuenciación."},
+{u:"u2",q:"Single-end vs. paired-end y qué beneficios trae",a:"Single-end: 1 fragmento = 1 read. Paired-end: 1 fragmento = <b>2 reads</b>, una de cada extremo, con distancia conocida entre ellas.<br>Beneficia el <b>mapeo y el ensamblado</b>: si una read corta mapea en cinco sitios repetitivos, la posición de su pareja resuelve cuál es. También mejora la detección de indels, inversiones, translocaciones y otras variantes estructurales."},
+{u:"u2",q:"¿Qué es el multiplexado y cómo afecta la profundidad?",a:"Secuenciar varias muestras juntas, cada una con un <b>barcode</b>; después se demultiplexan por software. Como el secuenciador genera una cantidad <b>finita</b> de reads, cuantas más muestras comparten la corrida, <b>menos profundidad</b> le toca a cada una."},
+{u:"u2",q:"Ensamblado de novo vs. reference-based",a:"<b>De novo</b> (genoma desconocido): reads → solapamientos → contigs → scaffolds → genoma. Las repetitivas son el gran problema; las long reads ayudan mucho.<br><b>Reference-based</b> (genoma conocido): reads → alineamiento contra la referencia → <b>variant calling</b>. Computacionalmente mucho más simple."},
+{u:"u2",q:"¿Qué es un genoma de referencia y qué NO es?",a:"Es un <b>andamiaje</b> o sistema de coordenadas común contra el cual se alinean las reads para ver dónde difieren.<br>NO es el molde físico que usa la polimerasa, ni corrige errores del FASTQ, ni contiene todas las variantes patogénicas existentes."},
+{u:"u2",q:"¿Qué información hay en un VCF?",a:"<code>CHROM</code> (cromosoma), <code>POS</code> (posición), <code>REF</code> (alelo de referencia), <code>ALT</code> (alternativo), <code>QUAL</code> (confianza del llamado) e <code>INFO</code>. Es la lista de diferencias respecto de la referencia; sin anotar no dice qué efecto biológico tienen."},
+{u:"u2",q:"WGS, WES y targeted: ¿cuándo cada uno?",a:"<b>WGS:</b> todo el genoma; único que ve reguladoras, intrónicas, no codificantes y variantes estructurales.<br><b>WES:</b> sólo exones (~1&#8209;2% del genoma), más barato, concentra variantes de enfermedad conocidas.<br><b>Targeted:</b> regiones puntuales ya sospechadas. El WES es un targeted amplio."},
+{u:"u2",q:"¿Cómo se capturan las regiones de interés antes de secuenciar?",a:"Con <b>sondas</b> complementarias que hibridan y permiten enriquecer esos fragmentos, o con <b>PCR</b> usando primers específicos. Después se arma la library enriquecida y se secuencia."},
+{u:"u2",q:"¿Qué es un SNP array y en qué se diferencia de secuenciar?",a:"Es una plataforma de <b>genotipificación</b>, no de secuenciación: sondas para cientos de miles de posiciones <b>ya conocidas y variables</b>; el ADN hibrida y la intensidad de fluorescencia da el genotipo.<br>NGS pregunta “¿qué dice acá?” y puede descubrir variantes nuevas; el array pregunta “en esta posición, ¿tenés A o G?”."},
+{u:"u2",q:"¿Por qué un SNP array sirve si sólo mira cientos de miles de puntos?",a:"Porque muchas regiones se heredan juntas por <b>desequilibrio de ligamiento (LD)</b>, así que un SNP funciona como <b>marcador</b> de una región más grande. Es barato y de alto rendimiento: por eso hizo posibles los GWAS a gran escala y los servicios comerciales de genotipado."},
+{u:"u2",q:"Variantes germinales vs. somáticas",a:"<b>Germinales:</b> están en las células germinales, pueden transmitirse a la descendencia y, si son heredadas, están en todas las células del individuo.<br><b>Somáticas:</b> aparecen durante la vida en una célula o linaje celular y no se transmiten a la descendencia."},
+
+{u:"u3",q:"¿Qué es el Earth BioGenome Project?",a:"Un proyecto internacional para generar <b>genomas de referencia de alta calidad de todas las especies eucariotas</b> conocidas (hoy tenemos ~1%). Su idea es una <b>biblioteca digital de la vida</b>. El Darwin Tree of Life es su rama para las ~70.000 especies de Gran Bretaña e Irlanda."},
+{u:"u3",q:"Etapas para generar un genoma de referencia de una especie nueva",a:"1) Obtención e <b>identificación</b> de la muestra (morfología + DNA barcoding). 2) Extracción y <b>secuenciación</b>, con <b>long reads</b> (PacBio). 3) <b>Ensamblado</b>, idealmente a nivel cromosómico. 4) <b>Anotación</b>: pasar de una lista de nucleótidos a información biológica."},
+{u:"u3",q:"Principales desafíos del EBP",a:"Escala (cientos de miles de especies), tecnología más rápida y barata, <b>anotación</b> (el paso más complejo), capacidad computacional y almacenamiento (nube, “analizar una vez y reutilizar muchas veces”) y <b>acceso equitativo</b>: gran parte de la biodiversidad está en el Sur Global."},
+{u:"u3",q:"¿Qué aportaron los primeros genomas diploides individuales?",a:"Mostraron la variación <b>entre las dos copias</b> de una persona, no sólo una referencia haploide y compuesta. HuRef (Levy 2007) y Watson (Wheeler 2008) revelaron que la variabilidad incluye SNPs, indels, <b>variantes estructurales</b>, duplicaciones segmentarias y <b>CNVs</b>, y abrieron la genómica individualizada."},
+{u:"u3",q:"¿Qué es una CNV y cómo se detectaba?",a:"<b>Copy Number Variant:</b> cambio en la cantidad de copias de una región del ADN (una persona puede tenerla una vez, duplicada o perdida). Puede modificar la cantidad de producto génico. Se detectaban con <b>CGH</b> y <b>SNP arrays</b>. En HuRef se identificaron 62."},
+{u:"u3",q:"¿Qué es una duplicación segmentaria?",a:"Una región del genoma de <b>más de 5 kb con más del 90% de identidad</b> de secuencia. Favorecen la recombinación y generan nuevas variantes, y muchas no estaban bien representadas en las primeras referencias."},
+{u:"u3",q:"En el genoma de Watson, ¿por qué los SNPs nuevos eran mayormente heterocigotas?",a:"Los conocidos estaban ~50/50, pero los <b>nuevos</b> eran 83,3% heterocigotas. Una variante nueva probablemente sea <b>rara</b> en la población: es mucho más probable encontrarla en una sola copia que en las dos."},
+{u:"u3",q:"¿Por qué las poblaciones africanas tienen más diversidad genética?",a:"Porque los humanos modernos surgieron en África y esas poblaciones acumularon variación durante más tiempo. Los grupos que migraron eran pequeños y llevaron sólo parte de esa diversidad (<b>efecto fundador</b>), así que fuera de África la diversidad es <b>menor</b>."},
+{u:"u3",q:"Cuello de botella vs. efecto fundador",a:"<b>Cuello de botella:</b> la población completa se reduce drásticamente por un evento; los sobrevivientes son una muestra azarosa y parte de la diversidad se pierde para siempre.<br><b>Efecto fundador:</b> un grupo pequeño se <b>separa</b> y funda una población nueva llevando sólo parte de la diversidad original."},
+{u:"u3",q:"¿Qué es la inferencia de admixtura?",a:"Analizar qué <b>proporción del genoma</b> de un individuo puede asociarse a distintas poblaciones ancestrales (el gráfico de barras de colores). Permite ver relaciones entre poblaciones y mezcla; no es simplemente “de dónde es” una persona."},
+{u:"u3",q:"¿Qué es dbSNP y qué NO es?",a:"Un catálogo de <b>identificadores</b> (rsID) para variantes reportadas: infraestructura de <b>nomenclatura</b>. Es inclusiva y <b>no curada</b>, así que puede registrar artefactos. NO determina si una variante es correcta, patogénica ni relevante."},
+{u:"u3",q:"¿Por qué una misma variante aparece como G→A en una fuente y C→T en otra?",a:"Porque se la describe desde <b>hebras opuestas</b> del ADN (G↔C, A↔T). Es la misma variante (ejemplo: rs4988235). Por eso conviene usar el rsID, que es el identificador estable."},
+{u:"u3",q:"¿Qué es el 1000 Genomes Project?",a:"Un esfuerzo internacional (2008&#8209;2015) para construir un catálogo detallado de la <b>variabilidad genética poblacional</b>: SNPs, indels y CNVs. Buscaba identificar &gt;95% de las variantes de frecuencia relativamente baja y estimar frecuencias por población, haplotipos y <b>desequilibrio de ligamiento</b>. La versión de alta cobertura tiene 3202 muestras de 26 poblaciones."},
+{u:"u3",q:"¿Qué es gnomAD y para qué se usa?",a:"Reúne exomas y genomas de <b>cientos de miles</b> de individuos y permite consultar <b>frecuencias alélicas por población</b>. Hoy es la base principal para <b>filtrar variantes por frecuencia</b>. Ej.: rs334 (HBB, anemia falciforme) tiene frecuencia global muy distinta a la africana."},
+{u:"u3",q:"¿Qué es ENCODE y qué técnicas usa?",a:"Un proyecto para <b>catalogar los elementos funcionales</b> del genoma, sobre todo en regiones no codificantes, usando <b>ChIP-seq, ATAC-seq y DNase-seq</b> en muchos tipos celulares. Permite preguntar si una variante intrónica cae en un enhancer, un promotor o un sitio de unión de factor de transcripción."},
+{u:"u3",q:"¿Cómo funciona un ChIP-seq?",a:"Se usa un <b>anticuerpo específico</b> contra la proteína de interés (unido a beads magnéticas) para recuperar el complejo anticuerpo + proteína + ADN asociado. Después se secuencia ese ADN y se ve en qué regiones del genoma mapea → dónde estaba unida la proteína."},
+{u:"u3",q:"¿Cuál es la crítica a las conclusiones de ENCODE?",a:"Sus criterios (ser transcripto, tener una histona modificada, estar en cromatina abierta, unir un TF, tener un CpG metilado) describen un <b>estado molecular</b>, no demuestran una <b>función causal</b>. No es lo mismo “presenta características asociadas a actividad” que “cumple una función biológica necesaria”."},
+{u:"u3",q:"ClinVar: ¿qué es y qué hay que mirar además de la clasificación?",a:"Un repositorio público de variantes con su <b>interpretación clínica</b>, aportada por laboratorios y curadores. Hay que mirar el <b>review status</b> (estrellas) y si existen <b>conflictos</b> entre submitters (típico en BRCA1 → problema de las <b>VUS</b>)."},
+{u:"u3",q:"¿Qué hace ClinGen (distinto de ClinVar)?",a:"<b>Cura la evidencia</b> detrás de las relaciones <b>gen-enfermedad</b>: evalúa si hay evidencia suficiente (Definitive… Limited, Disputed), analiza la <b>sensibilidad a la dosis</b> (clave para CNVs) y publica especificaciones de los criterios ACMG por gen. Que un gen esté en un panel comercial no garantiza evidencia sólida."},
+{u:"u3",q:"¿Qué es PharmGKB y qué son los alelos estrella?",a:"Base de <b>farmacogenómica</b> que organiza la evidencia por gen, droga y nivel, con foco en lo <b>clínicamente accionable</b>. Los <b>alelos estrella</b> (*2, *3) son <b>haplotipos</b> —combinaciones de variantes que van juntas—, por eso un rsID solo no alcanza para predecir la respuesta. Ej.: CYP2C19 y clopidogrel; CFTR e ivacaftor."},
+{u:"u3",q:"¿Qué es un GWAS y qué etapas tiene?",a:"Un estudio de asociación de todo el genoma: compara <b>casos vs. controles</b> buscando variantes más frecuentes en un grupo.<br>Etapas: recolección de muestras (cuidando <b>estratificación poblacional</b> y admixture) → genotipificación → control de calidad → análisis estadístico (PLINK) → follow-up."},
+{u:"u3",q:"¿Qué muestra un Manhattan plot?",a:"Cada punto es un <b>SNP</b> ubicado según su posición en los cromosomas; la <b>altura</b> indica la fuerza de la asociación. Un punto muy por encima del resto señala una asociación estadística fuerte con el fenotipo."},
+{u:"u3",q:"La frase clave sobre GWAS",a:"<b>Asociación ≠ causalidad.</b> Que una variante aparezca más en los casos no significa que cause la enfermedad: sirve como punto de partida para hipótesis, que hay que replicar en otra población y demostrar funcionalmente."},
+{u:"u3",q:"¿Cómo se suma evidencia de que un gen es causante y no sólo asociado?",a:"Con <b>cosegregación</b>: ver si la variante se hereda junto con la enfermedad dentro de la familia (presente en los familiares afectados y ausente en los no afectados) a lo largo de varias generaciones."},
+
+{u:"u4",q:"¿Cuál es la lógica completa del pipeline del TP1?",a:"ADN → WES → FASTQ → QC → alineamiento → SAM → BAM → posprocesamiento → VCF → anotación funcional → anotación clínica → frecuencia poblacional → filtro por herencia → interpretación ACMG → variante candidata."},
+{u:"u4",q:"¿Por qué aparecen variantes intrónicas en un WES?",a:"Porque el ADN se fragmenta <b>al azar</b> y las sondas capturan también secuencia cercana a los exones (que además es donde están las señales de <b>splicing</b>). Un fragmento capturado puede contener exón + intrón. No significa que el exoma haya fallado."},
+{u:"u4",q:"¿Qué hace FastQC/MultiQC y qué se mira?",a:"Responden “¿mis lecturas son confiables?” antes de gastar todo el análisis. Se miran, entre otros, el <b>GC content</b> (en exoma no tiene por qué coincidir con el del genoma completo) y la <b>duplicación de secuencias</b> (puede venir de la captura y la amplificación de la librería)."},
+{u:"u4",q:"¿Qué son los read groups y por qué son fundamentales en un trío?",a:"Metadatos que se agregan durante el mapeo (<b>ID</b> lote, <b>SM</b> muestra, <b>PL</b> plataforma) para mantener identificada la procedencia de cada lectura. En un trío el archivo tiene que poder distinguir <b>padre ≠ madre ≠ hijo</b>."},
+{u:"u4",q:"SAM vs. BAM vs. BAI",a:"<b>SAM:</b> lecturas alineadas en formato de <b>texto</b> (pesado). <b>BAM:</b> lo mismo en <b>binario</b>, más eficiente. <b>BAI:</b> el <b>índice</b> del BAM, que permite acceder rápido a una región. El flujo es SAM → BAM ordenado (sorting) → BAM indexado."},
+{u:"u4",q:"¿Por qué se eliminan los duplicados de PCR?",a:"Porque una sola molécula original amplificada muchas veces generaría copias idénticas que, si se cuentan como moléculas independientes, <b>sobreestiman la evidencia</b> de una variante. Es clave para que la frecuencia alélica observada (p. ej. 50/50) refleje moléculas realmente independientes."},
+{u:"u4",q:"¿Qué es el joint calling y qué herramienta se usó?",a:"Llamar variantes de <b>padre, madre e hijo al mismo tiempo</b> (con <b>FreeBayes</b>), para usar la información del trío y mejorar la interpretación. Detecta SNPs, indels, MNPs y eventos complejos."},
+{u:"u4",q:"¿Qué significa QUAL en un VCF? (¡trampa clásica!)",a:"Es la <b>confianza en que el llamado de la variante sea real</b>. Un QUAL alto = más evidencia de que la variante existe.<br><b>QUAL ≠ impacto biológico ni patogenicidad</b>: eso se evalúa después, en la anotación funcional y la interpretación."},
+{u:"u4",q:"Después del variant calling, ¿ya encontramos la mutación?",a:"<b>No.</b> Quedan muchísimas variantes y todavía no se sabe si están en un gen, cuál, si modifican una proteína, si son benignas o patogénicas, qué frecuencia tienen ni si ya fueron asociadas a enfermedades. Falta anotar, filtrar e interpretar."},
+{u:"u4",q:"¿Qué hace bcftools norm y por qué importa?",a:"<b>Separa variantes multialélicas</b> y <b>normaliza indels</b> (left alignment) para lograr una representación consistente. Importa porque una misma variante puede escribirse de varias maneras y, sin normalizar, no cruza bien con las bases de datos externas."},
+{u:"u4",q:"Niveles de IMPACT de SnpEff",a:"<b>HIGH</b> (muy disruptivo: stop_gained, frameshift, splice), <b>MODERATE</b> (efecto funcional posible: missense), <b>LOW</b> (impacto menor) y <b>MODIFIER</b> (difícil de interpretar o de menor impacto). En el TP se priorizan HIGH y MODERATE."},
+{u:"u4",q:"¿Qué significa c.290G>A y p.Trp97*?",a:"<b>c.</b> es el nivel de ADN codificante: en la posición 290, una G cambia por A.<br><b>p.</b> es el nivel de proteína: en el aminoácido 97 (triptófano) aparece un <b>codón de parada prematuro</b> → proteína truncada."},
+{u:"u4",q:"¿Cuál fue la variante candidata del TP1 y por qué encaja?",a:"<b>CA2, p.Trp97*</b> (stop-gained). El gen CA2 causa deficiencia de anhidrasa carbónica II, que produce <b>osteopetrosis con acidosis tubular renal</b>: exactamente el fenotipo del paciente. Cumplía además el patrón recesivo del trío y estaba ausente en 1000 Genomes."},
+{u:"u4",q:"Si una variante aparece con AF = 0, ¿qué significa?",a:"No necesariamente que no exista. Puede que <b>realmente no se haya observado</b> en esa base, o que <b>no haya cruzado correctamente</b> (por ejemplo, un indel representado de otra manera). AF = 0 no es prueba automática de que sea extremadamente rara."},
+{u:"u4",q:"¿Por qué las variantes de alto impacto tienden a ser menos frecuentes?",a:"Por <b>selección purificadora</b>: si una variante perjudica seriamente la función de una proteína, tiende a eliminarse de la población a lo largo de generaciones. Es una tendencia poblacional, no una regla para cada variante."},
+
+{u:"u5",q:"¿De dónde salen los datos del TP2?",a:"De una familia real sana, <b>CEPH/Utah 1463</b> (NA12891 padre, NA12892 madre, NA12878 hija), sobre la cual los docentes agregaron artificialmente una variante patogénica real y publicada (<b>spike-in</b>). Simula un diagnóstico: buscar una aguja en un pajar."},
+{u:"u5",q:"¿Qué información tiene un archivo .tfam?",a:"El pedigrí: familia, individuo, padre, madre, sexo y fenotipo. Códigos: <b>fenotipo</b> 1 = no afectado y 2 = afectado; <b>sexo</b> 1 = macho y 2 = hembra."},
+{u:"u5",q:"Genotipos del trío para un patrón autosómico recesivo",a:"Hija afectada <code>1/1</code>, padre <code>0/1</code>, madre <code>0/1</code>: los padres son <b>portadores sanos</b>."},
+{u:"u5",q:"¿Cómo se ve una variante dominante de novo en el VCF del trío?",a:"Hija <code>0/1</code>, padre <code>0/0</code>, madre <code>0/0</code>: la variante aparece en la hija y no está en ninguno de los padres."},
+{u:"u5",q:"¿Qué significa que un genotipo esté phased (0|1)?",a:"La barra vertical <code>|</code> indica <b>fase</b> (se sabe de qué cromosoma viene cada alelo); la barra <code>/</code> indica que no se considera la fase. Para el filtro del TP no importa distinguir 0|1 de 1|0: se normalizan a <code>0/1</code> = heterocigota."},
+{u:"u5",q:"¿Por qué es tan importante que todo esté en la misma versión del genoma?",a:"Porque las <b>coordenadas cambian</b> entre GRCh37/hg19 y GRCh38: una variante no tiene la misma posición en las dos. El VCF, la referencia FASTA, SnpEff, ClinVar y 1000 Genomes tienen que corresponder a la <b>misma versión</b>."},
+{u:"u5",q:"¿Por qué se eliminan los campos AF/AC/AN antes de anotar con 1000 Genomes?",a:"Porque son la frecuencia calculada en <b>tu propio trío</b>. Si una variante no encuentra coincidencia en 1000 Genomes, podrías terminar leyendo la frecuencia de tus tres muestras como si fuera la <b>frecuencia poblacional</b>."},
+{u:"u5",q:"¿Por qué la mayoría de las variantes son LOW o MODIFIER?",a:"Porque una persona sana tiene enormes cantidades de variantes respecto de la referencia: la mayoría no afecta genes importantes, está en regiones no codificantes o es tolerada. Una variante que destruyera genes esenciales difícilmente se mantendría en la población."},
+{u:"u5",q:"¿Por qué la mayoría de las variantes no aparecen en ClinVar?",a:"Porque ClinVar reúne variantes con <b>relevancia clínica estudiada y reportada</b>, no todas las variantes existentes. Que la mayoría figure como “no reportado” es completamente normal."},
+{u:"u5",q:"¿Cuál es el orden correcto del razonamiento del TP2?",a:"1) ¿Cómo se hereda? → 2) ¿Qué impacto funcional tiene? → 3) ¿Qué tan frecuente es? → 4) ¿Hay evidencia clínica previa? → 5) ¿El gen se relaciona con la enfermedad? → 6) ¿Toda la evidencia junta alcanza para llamarla patogénica?"},
+{u:"u5",q:"PVS1: ¿qué dice y de dónde sale?",a:"Evidencia <b>muy fuerte</b>: variante con <b>pérdida de función</b> (nonsense, frameshift, ciertos splicing) en un gen donde la LoF es un mecanismo conocido de enfermedad. En el TP sale de SnpEff: IMPACT <b>HIGH</b> con ese tipo de efecto."},
+{u:"u5",q:"PM2, PP1 y PP4",a:"<b>PM2</b> (moderada): la variante está ausente o es extremadamente rara en poblaciones de referencia (1000 Genomes/gnomAD).<br><b>PP1</b> (de apoyo): <b>cosegrega</b> con la enfermedad en la familia.<br><b>PP4</b> (de apoyo): el fenotipo del paciente coincide fuertemente con la enfermedad del gen."},
+{u:"u5",q:"PS1 vs. PM5",a:"<b>PS1:</b> la <b>misma</b> variante ya fue reportada como patogénica.<br><b>PM5:</b> <b>otra</b> variante patogénica afecta el <b>mismo codón</b>. Ambas se buscan en ClinVar."},
+{u:"u5",q:"BA1 y BS1: ¿para qué sirven?",a:"Funcionan <b>en contra</b> de la patogenicidad: si una variante es demasiado <b>frecuente</b> para ser compatible con una enfermedad rara, eso es evidencia de que probablemente <b>no</b> sea patogénica. La frecuencia sale de 1000 Genomes/gnomAD."},
+{u:"u5",q:"¿Cuáles son las 5 categorías ACMG/AMP?",a:"<b>Patogénica</b>, <b>Probablemente patogénica</b>, <b>VUS</b> (variante de significado incierto), <b>Probablemente benigna</b> y <b>Benigna</b>."},
+{u:"u5",q:"¿Por qué no confiar ciegamente en VarSome o InterVar?",a:"Automatizan parte de la interpretación pero no reemplazan el razonamiento: hay que entender de dónde sale cada evidencia, qué significa, qué tan fuerte es y cómo se combina. Sirven como <b>segunda mirada</b> para comparar con tu propia clasificación."},
+
+{u:"u6",q:"¿Qué es el cfDNA en el embarazo y de dónde viene realmente?",a:"Fragmentos de ADN que circulan libres en el plasma, fuera de células. En el embarazo hay cfDNA <b>materno</b> y cfDNA que se suele llamar “fetal” pero en realidad proviene sobre todo de la <b>placenta</b> (trofoblasto), liberado en la fusión y apoptosis normales de citotrofoblastos y sincitiotrofoblastos."},
+{u:"u6",q:"¿Qué es la fracción fetal y por qué el test se hace desde la semana 10?",a:"Es la proporción del cfDNA total del plasma materno que proviene de la placenta. <b>Aumenta con la edad gestacional</b>: recién alrededor de la semana 10 suele haber suficiente ADN placentario para un resultado informativo.<br>(No es porque el feto “todavía no tenga” las variantes: las germinales están desde el cigoto.)"},
+{u:"u6",q:"¿Por qué la obesidad materna baja la fracción fetal?",a:"Porque hay <b>más liberación de cfDNA materno</b> (inflamación y apoptosis de adipocitos). Aumenta el denominador, así que la <b>proporción</b> placentaria cae aunque la cantidad absoluta de ADN placentario no haya disminuido."},
+{u:"u6",q:"¿Qué es un “no call” y cómo se interpreta?",a:"Un resultado <b>no concluyente</b>, típicamente por fracción fetal demasiado baja. <b>No</b> debe interpretarse como resultado normal: a veces la fracción baja se asocia a una alteración cromosómica, así que requiere seguimiento."},
+{u:"u6",q:"Método genome-wide del cfDNA: ¿cómo detecta una trisomía 21?",a:"Se secuencian al azar millones de fragmentos, se alinean contra la referencia, se cuenta cuántos vienen de cada cromosoma y se compara con embarazos euploides. Con una copia extra del 21 hay un <b>pequeño exceso</b> de fragmentos del cr. 21: es una detección <b>cuantitativa</b>, no se secuencia un cromosoma fetal aislado."},
+{u:"u6",q:"Método dirigido basado en SNPs",a:"Se seleccionan <b>SNPs informativos</b> de los cromosomas de interés (13, 18, 21), se amplifican por PCR, se secuencian los alelos y se calculan las <b>proporciones alélicas</b>. En un locus heterocigota se espera ~1:1; una copia extra desvía esa relación."},
+{u:"u6",q:"Sensibilidad, especificidad y VPP: ¿qué pregunta responde cada una?",a:"<b>Sensibilidad:</b> de los que sí tienen la alteración, ¿cuántos detecto?<br><b>Especificidad:</b> de los que no la tienen, ¿cuántos dan negativo?<br><b>VPP:</b> si dio positivo, ¿qué probabilidad hay de que sea real? Depende de la <b>prevalencia</b>, por eso baja en población de bajo riesgo."},
+{u:"u6",q:"¿Por qué el cfDNA es screening y no diagnóstico?",a:"Porque no examina células fetales: analiza una mezcla con mucho ADN materno y una fracción placentaria, y el genoma de la placenta puede no coincidir con el del feto ni con el de la madre. Todo positivo debe confirmarse con amniocentesis, biopsia corial, cariotipo o microarray."},
+{u:"u6",q:"Tres causas de falso positivo del cfDNA",a:"<b>Mosaicismo placentario confinado</b> (placenta aneuploide, feto euploide), <b>gemelo evanescente</b>, alteraciones cromosómicas <b>maternas</b> (mosaicismos 45,X o 47,XXX, CNVs), <b>cáncer materno</b> o leiomiomas, y trasplante de donante masculino (discordancia de sexo)."},
+{u:"u6",q:"¿Por qué para T13 o monosomía X se prefiere amniocentesis?",a:"Porque la biopsia corial analiza <b>placenta</b> y esas alteraciones tienen más frecuencia de <b>mosaicismo placentario confinado</b>. La amniocentesis analiza células del líquido amniótico, que representan mejor al feto."},
+{u:"u6",q:"¿Qué NO descarta un resultado negativo de cfDNA?",a:"Otras anomalías cromosómicas (las trisomías comunes son sólo ~un tercio de lo que ve un cariotipo o microarray), alteraciones estructurales fetales, enfermedades monogénicas no incluidas, mosaicismos y microdeleciones no analizadas. Si la ecografía sugiere aneuploidía, hay que seguir estudiando."}
+];
+
+var QS=[
+{t:"vf",u:"u2",src:"Parciales 2022, 2023, 2024, recu 2024, 2025, 2026 (¡7 veces!)",q:"Con una secuenciación de exomas puedo averiguar la abundancia de ciertos transcriptos.",ok:false,why:"El WES secuencia <b>ADN</b>, que está en ~2 copias por célula independientemente de cuánto se exprese el gen. La abundancia de transcriptos es una medida de <b>ARN</b> y se estudia con RNA-seq, RT-qPCR o Northern blot. Lo único que podría decirte el exoma es qué secuencia tienen los exones, no cuánto se transcriben."},
+{t:"vf",u:"u2",src:"Parciales 2024, recu 2024, dic 2024, 2025, 2026",q:"Las lecturas de cadena corta son ideales para el ensamblaje de genomas de novo por su capacidad para resolver secciones repetitivas.",ok:false,why:"Es exactamente al revés: las reads cortas <b>no</b> pueden atravesar regiones repetitivas y por eso el ensamblado de novo se complica (no se sabe en qué copia va cada fragmento). Las ideales son las <b>lecturas largas</b> (PacBio, Nanopore), que cubren el bloque repetido entero y llegan a secuencia única de los dos lados: por eso fueron la clave del T2T."},
+{t:"vf",u:"u2",src:"Parciales 2024 y 2026",q:"Todas las técnicas de secuenciación de tercera generación usan secuenciación por síntesis.",ok:false,why:"<b>Oxford Nanopore no.</b> Hace una <b>lectura directa</b> de la molécula: el ADN atraviesa un nanoporo y altera la corriente iónica. PacBio sí es por síntesis (polimerasa en un ZMW, en tiempo real)."},
+{t:"vf",u:"u2",src:"Parciales 2024 y 2026",q:"En el proceso de variant calling, las variantes se almacenan en un archivo “fastq”.",ok:false,why:"Se almacenan en un <b>VCF</b> (Variant Call Format), con CHROM, POS, REF, ALT, QUAL e INFO. El <b>FASTQ</b> es lo que devuelve el secuenciador: las reads crudas con su calidad por base, antes del alineamiento."},
+{t:"vf",u:"u2",src:"Parciales 2024 y 2026",q:"El primer borrador del genoma humano publicado en 2001 se logró principalmente gracias al desarrollo de las tecnologías de secuenciación de 2da generación (NGS).",ok:false,why:"Se logró con <b>Sanger automatizado</b> (electroforesis capilar, ddNTP fluorescentes), tanto en el proyecto público como en Celera. La NGS llegó después, y es la que permitió los genomas individuales (Watson, 2008) y más tarde el T2T con long reads."},
+{t:"vf",u:"u2",src:"Parciales 2024 y 2026",q:"Los servicios de genotipado “direct to consumer” como 23andMe logran un servicio muy económico gracias a que utilizan tecnologías de secuenciación de tercera generación.",ok:false,why:"No secuencian: usan <b>SNP arrays</b>, que genotipan cientos de miles de posiciones <b>ya conocidas y variables</b> por hibridación y fluorescencia. Es barato justamente porque no lee todo el genoma, y funciona porque el <b>desequilibrio de ligamiento</b> hace que un SNP marque una región entera."},
+{t:"vf",u:"u3",src:"Parciales 2024 y 2025",q:"La salida de los primeros humanos de África generó un gran aumento en la diversidad genética de estas poblaciones respecto de las que quedaron en ese continente, debido al efecto fundador.",ok:false,why:"El efecto fundador hace lo contrario: los grupos que migraron eran pequeños y se llevaron <b>sólo una parte</b> de la diversidad original. Por eso las poblaciones <b>africanas conservan la mayor diversidad</b> genética y las no africanas tienen menos."},
+{t:"vf",u:"u3",src:"Recu 2024, final dic 2024, parcial 2025, final julio 2025",q:"A un paciente se le puede hacer un estudio GWAS (Genome-wide association studies) para diagnosticar enfermedades monogénicas comunes.",ok:false,why:"Un GWAS es un estudio <b>poblacional</b> (miles de casos vs. miles de controles) que da <b>asociaciones estadísticas</b>, no un diagnóstico individual; además busca variantes comunes de efecto pequeño en enfermedades <b>complejas/poligénicas</b>. Para una enfermedad monogénica se usa WES, WGS o un panel dirigido en ese paciente."},
+{t:"vf",u:"u4",src:"Recu 2024 y final dic 2024",q:"En un estudio de exomas para encontrar variantes causantes de una enfermedad rara, inicialmente se obtiene una gran cantidad de variantes y se debe filtrar hasta encontrar la que potencialmente explica el fenotipo.",ok:true,why:"Correcto: es la aguja en el pajar. Cada persona tiene muchísimas variantes respecto de la referencia, y se filtra combinando <b>patrón de herencia</b> (pedigrí) + <b>impacto funcional</b> (SnpEff) + <b>frecuencia poblacional</b> (1000 Genomes/gnomAD) + <b>evidencia clínica</b> (ClinVar), hasta quedarse con unas pocas candidatas que después se clasifican por ACMG/AMP."},
+{t:"vf",u:"u4",src:"Parcial 2024",q:"En un experimento de genómica, el llamado de variantes me permite agregar información biológica a lo encontrado.",ok:false,why:"El <b>llamado de variantes</b> sólo detecta <i>qué</i> difiere de la referencia y <i>dónde</i> (produce el VCF). Agregar información biológica —gen afectado, efecto sobre la proteína, frecuencia, evidencia clínica— es la <b>anotación</b>."},
+{t:"vf",u:"u4",src:"Parcial 2026 (caso Tay-Sachs)",q:"Al visualizar en el IGV el exoma del niño en la posición c.805 del gen HEXA, donde es homocigota mutado, deberíamos ver que aproximadamente el 100% de las lecturas muestran “A” en lugar de la “G” de referencia.",ok:true,why:"Verdadero: si es homocigota, <b>las dos copias</b> del cromosoma llevan la variante, así que todas las reads que cubren esa posición deberían mostrar A. Se dice “aproximadamente” porque siempre puede haber alguna lectura con error de secuenciación o mal alineada."},
+{t:"vf",u:"u6",src:"Parcial 2025 2C",q:"El test de ADN fetal en sangre materna usualmente se hace a partir de la semana 10 de gestación porque antes de ese punto el feto aún no desarrolló las variantes germinales de interés.",ok:false,why:"La justificación es falsa: las variantes <b>germinales están desde el cigoto</b>. Se espera a la semana 10 porque la <b>fracción fetal</b> (la proporción de cfDNA de origen <b>placentario</b> en el plasma materno) aumenta con la edad gestacional, y antes suele ser demasiado baja para un resultado informativo (“no call”)."},
+{t:"vf",u:"u2",src:"Clase 2 · enunciados de repaso",q:"Existe una relación lineal entre el tamaño del genoma y la cantidad de genes.",ok:false,why:"No. Gran parte del tamaño se explica por intrones, secuencias repetitivas, transposones y ADN no codificante. Tampoco hay relación lineal entre tamaño del genoma y complejidad del organismo: los humanos no somos ni la especie con más genes ni la del genoma más grande."},
+{t:"vf",u:"u0",src:"Clase 2 · enunciados de repaso",q:"Todos los ARN codifican proteínas.",ok:false,why:"Existen muchísimos <b>ARN no codificantes</b>: ARNr, ARNt, miARN, siARN, lncRNA. Muchos cumplen funciones reguladoras de la expresión génica y de la traducción."},
+{t:"vf",u:"u4",src:"TP 1",q:"Un valor alto de QUAL en el VCF indica que la variante es más probablemente patogénica.",ok:false,why:"<b>QUAL ≠ impacto biológico.</b> QUAL mide la <b>confianza en el llamado</b>: qué tan seguro está el software de que esa variante realmente está ahí. La patogenicidad se evalúa después, con la anotación funcional, la frecuencia, la evidencia clínica y los criterios ACMG."},
+{t:"vf",u:"u5",src:"TP 2",q:"Si SnpEff clasifica una variante como HIGH, ya podemos considerarla patogénica.",ok:false,why:"<b>Impacto ≠ patogenicidad.</b> SnpEff predice qué tan disruptivo <i>podría</i> ser el efecto funcional. Para decir que causa enfermedad hace falta integrar herencia, frecuencia poblacional, evidencia clínica previa, relación gen-enfermedad y fenotipo del paciente (ACMG/AMP)."},
+{t:"vf",u:"u3",src:"Clase 3",q:"Que una variante esté asociada estadísticamente a una enfermedad en un GWAS demuestra que la causa.",ok:false,why:"<b>Asociación ≠ causalidad.</b> El GWAS marca una región/variante que aparece con más frecuencia en los casos, y sirve para generar hipótesis. Para llegar a la causa hay que replicar en poblaciones independientes (validación biológica) y demostrar el mecanismo (validación funcional), como se hizo con C4 en esquizofrenia."},
+{t:"vf",u:"u2",src:"Clase 2",q:"Aunque hagamos una secuenciación de exomas, es esperable encontrar variantes intrónicas entre los resultados.",ok:true,why:"Verdadero. El ADN se fragmenta al azar y las sondas de captura toman también secuencia vecina a los exones —justamente donde están las señales de <b>splicing</b>—, así que un fragmento capturado puede contener exón + intrón."},
+{t:"vf",u:"u5",src:"TP 2",q:"Una variante ausente en 1000 Genomes (AF = 0) es, con seguridad, extremadamente rara en la población.",ok:false,why:"No necesariamente. Puede que realmente no se haya observado, <b>o</b> que la variante no haya cruzado bien con la base por diferencias en su representación (muy típico en indels). Hay que revisar qué pasó con esa variante antes de usar el criterio PM2."},
+
+{t:"mc",u:"u4",src:"Parcial 2026 1C · caso Tay-Sachs",q:"Los padres son portadores heterocigotos de la mutación en HEXA. ¿Qué esperarías ver al inspeccionar sus alineamientos en esa posición exacta en el IGV?",opts:["El 100% de las lecturas con el nucleótido mutado “A”.","Aproximadamente un 50% de las lecturas con la “G” de referencia y un 50% con la “A” mutada.","Un gap o espacio en blanco, porque el secuenciador no puede leer fragmentos heterocigotos.","Una caída drástica de la profundidad de cobertura exclusivamente en esa posición.","Ninguna de las opciones es correcta."],ok:1,why:"Somos <b>diploides</b>: un cromosoma lleva el alelo de referencia y el otro el alterado, y las reads se muestrean al azar de los dos. Con buena profundidad se espera ~50/50 (nunca matemáticamente exacto). Un secuenciador no “ve” heterocigosis: lee moléculas individuales, y la heterocigosis se infiere del conjunto."},
+{t:"mc",u:"u2",src:"Parcial 2026 1C",q:"En este flujo de trabajo, ¿qué rol fundamental cumple el “genoma de referencia” humano al procesar los datos de la familia?",opts:["Es la molécula de ADN físico que usa la polimerasa como molde dentro del secuenciador.","Corrige automáticamente los errores químicos ocurridos al final de las lecturas en los FASTQ.","Contiene la información de todas las variantes alélicas patogénicas que existen en la naturaleza.","Sirve como andamio computacional contra el cual se alinean los millones de lecturas cortas para detectar dónde difieren.","Ninguna de las opciones es correcta."],ok:3,why:"El genoma de referencia es un <b>andamiaje/sistema de coordenadas</b> in silico. El molde físico es el ADN del paciente; la calidad del FASTQ no se corrige sola (se hace QC y trimming); y la referencia no es un catálogo de variantes patogénicas (eso sería ClinVar)."},
+{t:"mc",u:"u2",src:"Parcial 2025 2C",q:"¿Qué beneficio principal ofrecen las lecturas paired-end frente a las single-end durante el ensamblado y el alineamiento?",opts:["Reducen la tasa de error de secuenciación por base.","Permiten secuenciar fragmentos de ADN mucho más largos en una sola lectura.","Ayudan a resolver la ubicación de lecturas en regiones repetitivas y a identificar variantes estructurales.","Disminuyen el costo total de la secuenciación por muestra.","Eliminan la necesidad de un genoma de referencia."],ok:2,why:"Se secuencian los <b>dos extremos del mismo fragmento</b> y se conoce aproximadamente la distancia entre ambas reads. Si una mapea en varios sitios repetitivos, la posición de su pareja define cuál es el correcto; además ayuda a detectar indels, inversiones y translocaciones. No cambia la química (no baja el error por base) ni alarga la lectura."},
+{t:"mc",u:"u2",src:"Parcial 2025 2C",q:"¿Cuál es la diferencia fundamental entre la información de un SNP array y la de una secuenciación de genoma completo (WGS)?",opts:["El SNP array da la secuencia completa de todos los exones y el WGS cubre además los intrones.","Un SNP array interroga el genotipo en cientos de miles de posiciones predefinidas, mientras que el WGS potencialmente identifica todas las variantes del genoma.","Ambos secuencian el genoma, pero los arrays tienen una tasa de error mucho más baja.","El WGS sólo detecta SNPs, mientras que los arrays detectan también inserciones y deleciones.","No hay diferencia fundamental: el array es una versión más económica del WGS."],ok:1,why:"El array <b>no secuencia</b>: pregunta por posiciones <b>conocidas de antemano</b> mediante hibridación con sondas e intensidad de fluorescencia. El WGS lee las bases y puede descubrir variantes <b>nuevas</b>, incluidas indels y estructurales."},
+{t:"mc",u:"u2",src:"Parcial 2025 2C",q:"¿Por qué el cromosoma Y humano fue uno de los últimos en secuenciarse completamente?",opts:["Porque contiene muy pocos genes y no se consideró importante.","Porque tiene una estructura muy pequeña y es difícil de aislar.","Porque es exclusivo de los varones y la mayoría de los genomas de referencia iniciales eran de mujeres.","Porque contiene una enorme cantidad de secuencias repetitivas, difíciles de ensamblar con lecturas cortas.","Porque su alto contenido G-C impide la unión de la polimerasa."],ok:3,why:"Su arquitectura es repetitiva: repeticiones en tándem, grandes palíndromos, duplicaciones segmentarias, regiones amplicónicas y heterocromatina. Más de la mitad del Y faltaba en GRCh38 y se resolvió recién en <b>2023</b> con long reads (HG002). En T2T 2022 faltó por otra razón: la línea CHM13 es 46,XX."},
+{t:"mc",u:"u3",src:"Parciales 2023, 2024 y 2025",q:"Sobre GWAS y scores de riesgo poligénico (PRS), elegí la opción correcta:",opts:["Los PRS permiten diagnosticar una enfermedad rara o mendeliana; los GWAS usan esa información para diagnosticar enfermedades poligénicas comunes.","Los PRS dan el riesgo de una enfermedad mendeliana por mutación puntual en un único gen; los GWAS dan significancia estadística para asociar SNPs comunes con fenotipos.","Los PRS se basan en genotipificar SNPs conocidos y generan una puntuación de riesgo relativo para un fenotipo; para calcularla se usan los resultados de estudios GWAS.","Los PRS generan una puntuación de riesgo relativo; los GWAS permiten usar esa información para diagnosticar enfermedades poligénicas comunes."],ok:2,why:"El PRS <b>usa los resultados de los GWAS</b> como pesos: suma el efecto de muchos SNPs conocidos para dar un <b>riesgo relativo</b> de un fenotipo común. Ni el PRS ni el GWAS <b>diagnostican</b>, y ninguno de los dos sirve para enfermedades mendelianas monogénicas."},
+{t:"mc",u:"u4",src:"Parciales 2023 y 2024",q:"Sobre el análisis de datos de exomas para identificar variantes causantes de enfermedades raras, elegí la opción correcta:",opts:["Tras el llamado de variantes uso el archivo SAM para anotarlas, y después analizo todas las variantes encontradas.","Tras el llamado de variantes uso el SAM para anotarlas y armo un panel de genes candidatos.","Uso el VCF para anotar; eso permite saber la confianza del llamado y filtrar falsos positivos; después busco en un panel variantes con frecuencia alélica <b>alta</b> en la población.","Uso el VCF para anotar; eso permite agregar información conocida de bases de datos, incluida evidencia de patogenicidad; después busco en un panel de genes candidatos variantes con frecuencia alélica <b>baja</b> en la población."],ok:3,why:"Se anota el <b>VCF</b> (el SAM son alineamientos, no variantes). Anotar = agregar información de bases de datos (gen, efecto, ClinVar, frecuencias), no medir la confianza del llamado (eso es QUAL). Y una variante causal de enfermedad <b>rara</b> debe ser <b>rara</b> en la población general."},
+{t:"mc",u:"u4",src:"Final junio 2023",q:"¿Cuál de estas afirmaciones sobre el llamado de variantes (variant calling) es correcta?",opts:["No requiere alinear los datos a un genoma de referencia.","Las variantes se almacenan en un archivo .fastq.","Es el paso donde se evalúa el impacto biológico de cada variante.","Ninguna de las afirmaciones es correcta."],ok:3,why:"Ninguna sirve: el variant calling <b>se ejecuta después del alineamiento</b> (necesita saber dónde va cada read), las variantes se guardan en un <b>VCF</b> y el impacto biológico se evalúa en la <b>anotación</b>, no en el llamado."},
+{t:"mc",u:"u2",src:"Clase 2",q:"¿Cuál de estas tecnologías NO utiliza secuenciación por síntesis?",opts:["Illumina","Pirosecuenciación (Roche 454)","Ion Torrent","Oxford Nanopore","PacBio SMRT"],ok:3,why:"<b>Nanopore</b> hace una lectura directa: la molécula atraviesa el poro y altera la corriente iónica. Todas las demás detectan la incorporación de nucleótidos mientras una polimerasa sintetiza la cadena complementaria (luz/PPi en 454, H⁺ en Ion Torrent, fluorescencia con terminadores reversibles en Illumina, fluorescencia en tiempo real en PacBio)."},
+{t:"mc",u:"u2",src:"Final 2022",q:"Un homopolímero (p. ej. AAAAAAA) complica la secuenciación. ¿En qué tecnologías y por qué?",opts:["En Illumina, porque el terminador reversible bloquea la incorporación de bases repetidas.","En pirosecuenciación e Ion Torrent, porque al haber un solo dNTP por ciclo se incorporan varias bases juntas y hay que inferir cuántas por la intensidad de la señal.","En Nanopore, porque la polimerasa se desincroniza dentro del cluster.","En PacBio, porque los hairpins impiden leer bases repetidas."],ok:1,why:"En 454 e Ion Torrent hay <b>un solo tipo de dNTP disponible por ciclo</b>: si hay 7 A seguidas se incorporan las 7 en el mismo ciclo y la máquina debe deducir la cantidad por la intensidad (luz o H⁺), lo que se vuelve impreciso. Illumina lo evita con el <b>terminador reversible</b>, que permite una sola base por ciclo."},
+{t:"mc",u:"u2",src:"Clase 2",q:"¿Por qué cae la calidad de las bases hacia el final de las lecturas de Illumina?",opts:["Porque se agota la polimerasa y deja de incorporar nucleótidos.","Porque el genoma de referencia tiene menos cobertura en esas posiciones.","Porque las polimerasas del cluster se desincronizan: algunas moléculas van adelantadas y otras atrasadas, y la señal se vuelve difusa.","Porque los adaptadores se degradan durante la corrida."],ok:2,why:"Cada cluster tiene miles de copias del mismo fragmento secuenciándose en paralelo. Con los ciclos se pierde sincronía (desfasaje), la señal del cluster deja de ser pura y el <b>base calling</b> de las últimas posiciones se vuelve menos confiable. Por eso el FASTQ guarda una calidad por base y por eso existe el trimming."},
+{t:"mc",u:"u5",src:"TP 2",q:"En el VCF de un trío buscás una enfermedad autosómica recesiva heredada. ¿Qué combinación de genotipos es compatible?",opts:["Hija 0/1 · padre 0/0 · madre 0/0","Hija 1/1 · padre 0/1 · madre 0/1","Hija 0/1 · padre 0/1 · madre 0/0","Hija 0/0 · padre 0/1 · madre 0/1"],ok:1,why:"En un recesivo la afectada debe ser <b>homocigota para el alelo alternativo (1/1)</b> y cada progenitor sano tiene que aportarle una copia, es decir ser <b>portador heterocigota (0/1)</b>. La opción 1 es una dominante <b>de novo</b>; la 3, una dominante heredada del padre; la 4, una variante que la hija no heredó."},
+{t:"mc",u:"u5",src:"TP 2 · criterios ACMG",q:"Encontrás una variante stop-gained en un gen donde la pérdida de función es un mecanismo conocido de enfermedad. ¿Qué criterio ACMG aplica y con qué peso?",opts:["PM2, moderado","PP4, de apoyo","PVS1, muy fuerte","BA1, en contra de la patogenicidad"],ok:2,why:"<b>PVS1</b> (pathogenic very strong): variante nula —nonsense, frameshift, ciertos splicing— en un gen donde la <b>pérdida de función</b> causa la enfermedad. PM2 sería que esté ausente en poblaciones de referencia, PP4 que el fenotipo coincida con la enfermedad del gen, y BA1 es evidencia <b>en contra</b> (demasiado frecuente)."},
+{t:"mc",u:"u3",src:"Clase 3",q:"¿Cuál de estas afirmaciones sobre dbSNP es correcta?",opts:["Es una base curada que determina si una variante es patogénica.","Funciona como infraestructura de nomenclatura: asigna un identificador estable (rsID) a cada variante reportada, y no es curada.","Sólo contiene variantes encontradas en poblaciones europeas.","Reemplaza a gnomAD para consultar frecuencias alélicas clínicas."],ok:1,why:"dbSNP es un <b>catálogo de identificadores</b>: inclusivo y <b>no curado</b>, puede llegar a registrar variantes que después resultan artefactos. La interpretación clínica está en <b>ClinVar</b>, la evidencia gen-enfermedad en <b>ClinGen</b> y las frecuencias en <b>gnomAD</b>."},
+{t:"mc",u:"u3",src:"Clase 3",q:"Estás evaluando una variante en ClinVar. ¿Qué es lo más importante de mirar además de la clasificación?",opts:["El número de citas bibliográficas del gen.","El review status (estrellas) y si hay clasificaciones conflictivas entre los submitters.","La longitud del transcripto afectado.","El contenido GC de la región."],ok:1,why:"La clasificación sola puede ser engañosa: distintos laboratorios pueden llegar a conclusiones diferentes sobre la misma variante (“conflicting classifications”, típico en BRCA1 → el problema de las <b>VUS</b>). Las <b>estrellas</b> indican el nivel de respaldo/revisión de esa interpretación."},
+{t:"mc",u:"u2",src:"Clase 2",q:"Vas a ensamblar de novo el genoma de una especie nunca secuenciada, con muchas regiones repetitivas. ¿Qué elegís?",opts:["Illumina paired-end con mucha profundidad, porque tiene menor error por base.","Un SNP array de alta densidad.","Lecturas largas (PacBio HiFi y/o Nanopore), porque atraviesan las regiones repetitivas y facilitan el ensamblado.","Secuenciación de Sanger, porque da lecturas de mayor calidad."],ok:2,why:"Sin referencia hay que ensamblar por solapamientos, y ahí el enemigo son las repetitivas. Una <b>long read</b> puede cubrir el bloque repetido completo y anclarlo a secuencia única de ambos lados. Las reads cortas son excelentes para otras cosas (SNPs conocidos, gran profundidad barata), pero no para esto."},
+{t:"mc",u:"u6",src:"Actividad previa · paper de cfDNA",q:"Una embarazada de bajo riesgo recibe un resultado de cfDNA positivo para trisomía 21. ¿Cuál es la conducta correcta y por qué?",opts:["Considerarlo diagnóstico: la sensibilidad del test es del 97%.","Confirmar con una prueba diagnóstica invasiva, porque el valor predictivo positivo baja al disminuir la prevalencia y el ADN analizado es mayormente placentario y materno.","Repetir el test recién en el tercer trimestre.","Descartar el resultado, porque en bajo riesgo el test no se aplica."],ok:1,why:"Sensibilidad y especificidad se mantienen altas, pero el <b>VPP depende de la prevalencia</b>: en bajo riesgo cae (~82% para T21, ~37% para T18, ~49% para T13). Además el cfDNA analiza una mezcla de ADN <b>materno y placentario</b>, y la placenta puede no representar al feto (mosaicismo placentario confinado). Por eso es <b>screening</b>: todo positivo se confirma con amniocentesis o biopsia corial."},
+{t:"mc",u:"u1",src:"Clase 1",q:"Un RNA-seq muestra 200 genes diferencialmente expresados entre pacientes y controles. Querés demostrar que uno de ellos es responsable del fenotipo, no sólo que está asociado. ¿Qué validación corresponde?",opts:["Validación técnica: repetir el hallazgo por RT-qPCR.","Validación biológica: repetirlo en una cohorte independiente.","Validación funcional: knockout, knockdown, sobreexpresión o CRISPR, y ver si se reproduce o rescata el fenotipo.","Aumentar la profundidad de secuenciación."],ok:2,why:"La <b>funcional</b> es la única que pasa de correlación a <b>causalidad</b>: se modifica experimentalmente la función del gen (knockout, knockdown, sobreexpresión, edición génica, ensayos reporteros, modelos animales) y se observa el efecto. La técnica confirma que la medición no es un artefacto y la biológica, que el resultado se repite en muestras independientes."},
+{t:"mc",u:"u2",src:"Clase 2",q:"Multiplexás 20 muestras en una misma corrida en lugar de secuenciar una sola. ¿Qué consecuencia principal tiene?",opts:["Aumenta la tasa de error por base de cada muestra.","Cada muestra recibe menos reads, por lo que baja su profundidad de cobertura.","Se pierde la información de paired-end.","No se pueden separar las muestras después de la corrida."],ok:1,why:"El secuenciador produce una cantidad <b>finita</b> de reads por corrida: si se reparten entre 20 libraries, cada una recibe menos y la <b>profundidad</b> por muestra cae (salvo que se aumente la capacidad). Separarlas sí se puede: cada muestra lleva un <b>barcode</b> y se demultiplexa por software."},
+{t:"mc",u:"u1",src:"Clase 1",q:"¿Cuál de estos es un ejemplo de estudio discovery-driven (libre de hipótesis)?",opts:["Medir por RT-qPCR la expresión de INS en páncreas de pacientes con diabetes tipo 2 y controles.","Comparar por proteómica el tejido tumoral y el sano sin buscar ninguna proteína en particular, y a partir de las diferencias formular una hipótesis.","Hacer un Western blot para confirmar que una proteína aumenta tras un tratamiento.","Secuenciar por Sanger un gen candidato en una familia."],ok:1,why:"En el enfoque <b>discovery-driven</b> se generan datos masivos sin una hipótesis previa sobre qué molécula está involucrada: se buscan patrones y diferencias, y de ahí <b>surge</b> la hipótesis, que después se valida. Las otras opciones parten de un candidato definido de antemano (hypothesis-driven)."}
+];
+
+var DEV=[
+{u:"u4",src:"Parcial 2026 1C",q:"Teniendo en cuenta la sospecha clínica inicial, explicá brevemente por qué el equipo médico eligió secuenciar el exoma (WES) completo del trío en lugar de pedir directamente un genoma completo (WGS).",a:"<ul class='tight'><li>El <b>exoma es ~1&#8209;2% del genoma</b> (~30 Mb) pero concentra una gran proporción de las variantes conocidas causantes de enfermedad mendeliana: es donde más probablemente esté la respuesta.</li><li>Es <b>más económico</b> y genera <b>muchísimos menos datos</b> para almacenar, procesar e interpretar (menos variantes = filtrado más manejable).</li><li>Se secuencia el <b>trío</b> porque el pedigrí permite aplicar el <b>patrón de herencia</b> como filtro (recesiva: proband 1/1, padres 0/1; o de novo: proband 0/1, padres 0/0), lo que descarta muchísimas variantes y ayuda a distinguir la causal.</li><li>Mencionar la contracara: el WES <b>no ve</b> regiones reguladoras, intrónicas profundas, no codificantes ni la mayoría de las variantes estructurales; si el exoma es negativo, se puede escalar a WGS.</li></ul>"},
+{u:"u4",src:"Parcial 2026 1C · 2025 2C · recu 2024 · final julio 2025 y dic 2024",q:"¿Qué diferencia hay entre el llamado de variantes y la anotación de variantes? Explicá con un ejemplo qué información da cada uno y cómo se obtiene.",a:"<ul class='tight'><li><b>Llamado (variant calling):</b> se hace <b>después del alineamiento</b>, comparando las reads de la muestra contra el genoma de referencia para detectar en qué posiciones difieren. Responde <b>qué</b> variante hay y <b>dónde</b>. Herramientas: FreeBayes, GATK. Salida: <b>VCF</b> con CHROM, POS, REF, ALT, QUAL y los genotipos (0/0, 0/1, 1/1).</li><li><b>Anotación:</b> se le agrega <b>información biológica y clínica</b> a cada variante del VCF, cruzándola con bases de datos. Responde <b>qué significa</b>. Herramientas: SnpEff/SnpSift, más ClinVar, 1000 Genomes/gnomAD, Ensembl.</li><li><b>Ejemplo:</b> el llamado dice “en chr8, posición X, la referencia tiene G y esta muestra tiene A; el hijo es 1/1 y los padres 0/1”. La anotación agrega: “está en el gen <b>CA2</b>, es un <b>stop_gained</b>, impacto <b>HIGH</b>, <code>c.290G&gt;A</code> / <code>p.Trp97*</code>, ausente en 1000 Genomes, y CA2 se asocia a osteopetrosis con acidosis tubular renal”.</li><li>Cierre: el llamado da una lista de diferencias; la anotación permite <b>priorizar e interpretar</b>. Y ojo con la trampa: <b>QUAL</b> (confianza del llamado) <b>no</b> es impacto biológico.</li></ul>"},
+{u:"u4",src:"Parcial 2026 1C",q:"¿Cómo puede el laboratorio validar técnicamente que el individuo tiene esa variante?",a:"<ul class='tight'><li>Repitiendo la detección con una <b>técnica independiente</b> del NGS: <b>secuenciación de Sanger</b> de esa región (el estándar), o PCR específica de alelo / ddPCR / RFLP si el cambio afecta un sitio de restricción.</li><li>Idealmente <b>en los tres integrantes del trío</b>: así se confirma la variante y de paso su <b>segregación</b> (hijo homocigota, padres heterocigotos), y se descarta un error de laboratorio o un intercambio/mezcla de muestras.</li><li>Aclarar qué pregunta responde: <b>¿la señal es real o es un artefacto del método</b> (error de secuenciación, del alineamiento o del pipeline)? No dice nada sobre si la variante es patogénica.</li><li>Se puede sumar la inspección del alineamiento en <b>IGV</b> (profundidad en esa posición, proporción de reads con el alelo alternativo, calidad de mapeo).</li></ul>"},
+{u:"u2",src:"Parciales 2022 y 2024 · recu 2024",q:"El ratón ciervo tiene poblaciones adaptadas a la altura y otras de llanura. Un grupo se propone secuenciar y estudiar el genoma de ambas poblaciones para dilucidar las bases moleculares de la adaptación. a) ¿Cuál sería la hipótesis de partida? b) ¿WGS o WES? c) Inventá un resultado relevante. d) ¿Cómo harías la validación técnica y funcional?",a:"<ul class='tight'><li><b>a) Hipótesis:</b> “Existen variantes genéticas con frecuencias significativamente distintas entre las poblaciones de altura y de llanura, ubicadas en genes relacionados con el transporte de oxígeno y la respuesta a hipoxia, que explican la adaptación a la altura.”</li><li><b>b) Comparación:</b> <i>En común</i>: ambas usan NGS, requieren library, alineamiento contra una referencia y variant calling; ambas detectan SNPs e indels. <b>WES</b>: más barato, menos datos, se concentra en regiones codificantes donde el efecto sobre la proteína es más interpretable → permite secuenciar <b>más individuos</b> por el mismo costo (clave para comparar poblaciones). <b>WGS</b>: mucho más caro y más datos, pero es el único que ve <b>regiones reguladoras</b>, intrónicas y no codificantes y detecta bien <b>variantes estructurales</b> — y en adaptación los cambios suelen ser <b>regulatorios</b>, así que el WES podría perdérselos.</li><li><b>c) Resultado inventado:</b> “Encontramos una variante missense en el gen de la β-globina (o en EPAS1) presente en el 85% de los individuos de altura y en el 10% de los de llanura, con impacto MODERATE.”</li><li><b>d) Validación técnica:</b> confirmar esa variante por <b>Sanger</b> en un subconjunto de individuos de ambas poblaciones (y/o genotipado por PCR), para descartar un artefacto del pipeline. <b>Validación funcional:</b> medir la afinidad de la hemoglobina por el O₂ en animales con y sin la variante; o editar el gen (<b>CRISPR</b>) en un modelo, o hacer knock-in de la variante de altura en ratones de llanura, y ver si cambia el fenotipo fisiológico. Se puede mencionar la <b>validación biológica</b> intermedia: replicar la asociación en otras poblaciones de altura independientes.</li></ul>"},
+{u:"u2",src:"Recu 2024 · final dic 2024",q:"Planteá una pregunta o problema que podrías evaluar con un estudio de genoma completo. ¿Por qué requiere genoma completo y no exoma o paneles?",a:"<ul class='tight'><li><b>Ejemplo de pregunta:</b> “En una familia con una enfermedad rara donde el exoma del trío resultó negativo, ¿existe una variante en una región <b>reguladora</b> (enhancer o promotor) o una <b>variante estructural</b> que explique el fenotipo?”</li><li><b>Por qué WGS:</b> el exoma y los paneles sólo capturan las regiones que se seleccionaron con sondas; el ~98&#8209;99% restante queda fuera: promotores, enhancers, intrones profundos (variantes de splicing crípticas), lncRNA y otras no codificantes.</li><li>El WGS tiene además <b>cobertura más uniforme</b> (no depende de la eficiencia de captura) y es mucho mejor para detectar <b>variantes estructurales</b>: grandes deleciones, duplicaciones, inversiones, translocaciones y CNVs, sobre todo si se combina con long reads o paired-end.</li><li>Otros ejemplos válidos: ensamblar <b>de novo</b> el genoma de una especie sin referencia; estudiar la <b>arquitectura completa</b> de un tumor; hacer un análisis poblacional de diversidad; identificar el <b>breakpoint</b> exacto de una translocación.</li></ul>"},
+{u:"u3",src:"Parcial 2024 · recu 2024",q:"Describí brevemente los proyectos 1000 Genomes y gnomAD: objetivos, qué tipo de información colectan y para qué sirve la información generada.",a:"<ul class='tight'><li><b>1000 Genomes (2008&#8209;2015):</b> esfuerzo internacional para construir un <b>catálogo detallado de la variabilidad genética humana a nivel poblacional</b>. Buscaba identificar más del 95% de las variantes de frecuencia relativamente baja. Colecta SNPs, indels y CNVs, con sus <b>frecuencias por población</b>, haplotipos y patrones de <b>desequilibrio de ligamiento</b>. La versión de alta cobertura tiene 3202 muestras de 26 poblaciones, incluidas poblaciones admixadas (PUR, CLM).</li><li><b>gnomAD:</b> agrega <b>exomas y genomas de cientos de miles de individuos</b> y da <b>frecuencias alélicas por población</b>, mucho más finas y actuales. Es hoy la referencia para filtrar variantes por frecuencia en el contexto clínico.</li><li><b>Para qué sirven:</b> saber si una variante es común o rara (criterios <b>PM2</b>, <b>BA1/BS1</b> de ACMG), <b>filtrar</b> las miles de variantes de un exoma, estudiar diversidad, ancestría y estructura poblacional, imputación en GWAS, y comparar la frecuencia entre poblaciones (ej.: rs334 de HBB en anemia falciforme es mucho más frecuente en poblaciones africanas).</li><li>Se puede cerrar con una <b>pregunta respondible</b>: “¿la variante que encontré en mi paciente aparece en individuos sanos y con qué frecuencia en su población de origen?”.</li></ul>"},
+{u:"u1",src:"Parciales 2023, 2024 y 2025",q:"Dá un ejemplo de un análisis exploratorio o libre de hipótesis que podrías estudiar con alguna ómica. Explicá por qué la ómica es mejor que otras estrategias de biología molecular para eso, y dá un hallazgo hipotético y la hipótesis que se desprende.",a:"<ul class='tight'><li><b>Ejemplo:</b> comparar el <b>transcriptoma (RNA-seq)</b> de biopsias de pacientes con una enfermedad y controles sanos, sin decidir de antemano qué gen mirar. (Sirve igual un ejemplo de genómica: comparar los <b>exomas</b> de casos y controles.)</li><li><b>Por qué la ómica:</b> las técnicas clásicas (PCR, qPCR, Western blot, Sanger) exigen <b>elegir el candidato antes</b>, así que sólo pueden confirmar lo que ya se sospecha y arrastran el <b>sesgo del investigador</b>. La ómica mide <b>miles de moléculas en paralelo</b>, así que puede detectar diferencias en genes que nadie había relacionado con la enfermedad.</li><li><b>Hallazgo hipotético:</b> “aparecen 40 genes de la respuesta inflamatoria sobreexpresados en los pacientes, entre ellos uno sin función descrita en ese tejido”.</li><li><b>Hipótesis derivada:</b> “la activación de la vía inflamatoria X contribuye al desarrollo de la enfermedad”, que después se testea con un experimento dirigido (knockout, knockdown, inhibición farmacológica) y se valida técnicamente por RT-qPCR.</li><li>Frase para cerrar: en las ómicas el recorrido puede invertirse — <b>datos masivos → descubrimiento → hipótesis → validación</b> — y eso <b>complementa</b>, no reemplaza, al método científico.</li></ul>"},
+{u:"u2",src:"Final 2022",q:"Explicá los fundamentos de la secuenciación por Illumina. ¿Qué ventajas tiene sobre las otras técnicas de segunda generación? ¿En qué se diferencia de las de tercera generación?",a:"<ul class='tight'><li><b>Preparación:</b> se fragmenta el ADN y se le agregan <b>adaptadores</b> (tagmentación) → <b>library</b>. Se carga en una <b>flow cell</b> con oligos complementarios; cada fragmento se une por un extremo, el extremo libre se pega a un oligo vecino formando un <b>puente</b>, y la <b>PCR puente</b> genera un <b>cluster</b> de copias idénticas (necesario para que la señal sea detectable).</li><li><b>Química:</b> secuenciación <b>por síntesis</b> con los <b>4 nucleótidos presentes a la vez</b>, cada uno con un <b>fluoróforo distinto</b> y un <b>terminador reversible</b>. Ciclo: incorporación de una sola base → <b>imaging</b> con láser (el color de cada cluster dice qué base entró) → <b>cleavage</b> del fluoróforo y del bloqueo del 3'OH → nuevo ciclo.</li><li><b>Ventajas sobre 454 e Ion Torrent:</b> resuelve bien los <b>homopolímeros</b> (el terminador reversible obliga a una base por ciclo, en lugar de inferir cuántas por la intensidad), muchísimo mayor throughput y menor costo por base, y alta precisión por base. Además permite <b>paired-end</b>.</li><li><b>Diferencias con la 3ª generación:</b> Illumina requiere <b>amplificación clonal</b> previa (posible fuente de error y de duplicados de PCR) y da <b>lecturas cortas</b>. La 3ª generación secuencia <b>moléculas individuales</b> (single molecule), sin amplificar, con <b>lecturas largas</b>: PacBio por síntesis en tiempo real dentro de un ZMW, y Nanopore por <b>lectura directa</b> del cambio de corriente iónica. Las long reads resuelven repetitivas, variantes estructurales y ensamblados de novo; las short reads siguen ganando en precisión por base, costo y profundidad.</li></ul>"},
+{u:"u4",src:"Parcial 2024 · caso CARD11 (SCID)",q:"En un trabajo de WES en un niño con inmunodeficiencia combinada grave, hijo de padres consanguíneos, se halló una mutación homocigota en CARD11. a) ¿Por qué los autores informan que los padres son consanguíneos? b) Mencioná al menos 2 filtros o criterios que pueden haber usado para llegar a esa variante partiendo de todos los SNVs del variant calling.",a:"<ul class='tight'><li><b>a)</b> Porque la consanguinidad aumenta mucho la probabilidad de que ambos padres sean <b>portadores de la misma variante rara</b> heredada de un ancestro común, y por lo tanto de que el hijo la reciba en <b>homocigosis</b>. Esto <b>orienta la hipótesis</b> hacia una herencia <b>autosómica recesiva</b> y permite buscar la variante dentro de regiones de <b>homocigosidad</b> (padres sanos heterocigotos, proband homocigota).</li><li><b>b) Filtros posibles (mencioná 2 o 3):</b><ul><li><b>Patrón de herencia / segregación en el trío:</b> proband <code>1/1</code>, padre <code>0/1</code>, madre <code>0/1</code>.</li><li><b>Frecuencia poblacional baja</b> (1000 Genomes, gnomAD): una enfermedad rara no puede deberse a una variante frecuente en sanos.</li><li><b>Impacto funcional</b>: quedarse con HIGH/MODERATE (nonsense, frameshift, splicing, missense) y descartar sinónimas e intergénicas.</li><li><b>Relación gen&#8209;fenotipo</b>: priorizar genes con función inmunológica conocida o compatibles con el cuadro clínico (panel de genes candidatos).</li><li><b>Calidad del llamado</b> (QUAL, profundidad) para descartar falsos positivos.</li></ul></li></ul>"},
+{u:"u2",src:"Final dic 2024",q:"Explicá qué es el control de calidad de las lecturas en un experimento de genómica: cómo se realiza, cómo afecta al alineamiento y al resultado final, y cómo se relaciona con el trimming.",a:"<ul class='tight'><li><b>Qué es:</b> evaluar si los datos crudos del secuenciador (<b>FASTQ</b>) son confiables <b>antes</b> de invertir todo el análisis. Se hace con <b>FastQC</b> por muestra y <b>MultiQC</b> para juntar todos los reportes.</li><li><b>Qué se mira:</b> la <b>calidad por base</b> a lo largo de la lectura (típicamente cae al final por desincronización de las polimerasas del cluster), el <b>contenido GC</b> (en un exoma no tiene por qué coincidir con el del genoma completo, porque son regiones seleccionadas), el nivel de <b>duplicación</b> (puede venir de la captura y la amplificación de la librería), la presencia de <b>adaptadores</b> y la longitud de las lecturas.</li><li><b>Trimming:</b> recortar los extremos de baja calidad y las secuencias de adaptadores, y descartar reads demasiado malas.</li><li><b>Impacto:</b> reads con bases erróneas o con adaptadores <b>mapean mal o no mapean</b>, bajan la calidad de mapeo y generan <b>falsos positivos</b> en el variant calling (o hacen perder variantes reales). Un buen QC + trimming mejora la tasa de alineamiento, la confiabilidad de las variantes llamadas y, en definitiva, la interpretación final.</li></ul>"},
+{u:"u2",src:"Final dic 2024",q:"¿Qué es la anotación funcional en el contexto de un experimento de genómica? ¿Cómo se realiza y qué información nos brinda?",a:"<ul class='tight'><li><b>Qué es:</b> agregarle <b>significado biológico</b> a las variantes del VCF (o a las regiones de una secuencia recién ensamblada). Sin anotar, sólo se sabe qué posición difiere de la referencia.</li><li><b>Cómo se hace:</b> con herramientas como <b>SnpEff</b> (o VEP/ANNOVAR), que cruzan cada variante con la <b>anotación del genoma</b> (GENCODE, Ensembl, RefSeq) y determinan en qué gen y región cae. Después se suman capas de bases de datos con <b>SnpSift</b>: <b>ClinVar</b> (interpretación clínica), <b>1000 Genomes/gnomAD</b> (frecuencia), Ensembl, UniProt (dominios proteicos).</li><li><b>Qué información da:</b> el <b>gen</b> afectado, la región (exón, intrón, UTR, splice site), el <b>efecto</b> (missense, stop_gained, frameshift, sinónima), el <b>IMPACT</b> predicho (HIGH/MODERATE/LOW/MODIFIER), la nomenclatura <b>HGVS</b> a nivel de ADN (<code>c.</code>) y de proteína (<code>p.</code>), la frecuencia poblacional y si ya fue reportada clínicamente.</li><li><b>Ojo:</b> la anotación es <b>predictiva</b>. IMPACT ≠ patogenicidad: la clasificación final requiere integrar herencia, frecuencia, evidencia clínica y fenotipo mediante <b>ACMG/AMP</b>.</li></ul>"},
+{u:"u3",src:"Parcial 2023",q:"Ordená cronológicamente estos proyectos asociados al estudio del genoma humano y describí brevemente el objetivo principal de cada uno: HapMap, gnomAD, 1000 Genomes, Proyecto Genoma Humano, ENCODE.",a:"<ol class='tight'><li><b>Proyecto Genoma Humano (1990&#8209;2003):</b> obtener la primera secuencia de referencia del genoma humano (~3,2 Gpb), con datos públicos y de libre acceso.</li><li><b>HapMap (2002&#8209;2010):</b> mapear los <b>haplotipos</b> y los patrones de <b>desequilibrio de ligamiento</b> en distintas poblaciones, para elegir los SNPs marcadores que hicieron posibles los GWAS. <i>(Este no aparece en tus resúmenes de clase: alcanza con ubicarlo acá.)</i></li><li><b>ENCODE (desde 2003):</b> catalogar los <b>elementos funcionales</b> del genoma —también los no codificantes— con ChIP-seq, ATAC-seq y DNase-seq en muchos tipos celulares.</li><li><b>1000 Genomes (2008&#8209;2015):</b> catálogo de la <b>variabilidad genética poblacional</b> (SNPs, indels, CNVs) con frecuencias por población, haplotipos y LD.</li><li><b>gnomAD (más reciente, en actualización constante):</b> agregar exomas y genomas de cientos de miles de individuos para dar <b>frecuencias alélicas por población</b>; es la base de referencia actual para filtrar variantes.</li></ol><p style='margin:.6em 0 0'>Idea de fondo para el cierre: se pasó de <b>una</b> secuencia de referencia → a entender qué <b>hace</b> cada región → a describir la <b>variación</b> entre individuos y poblaciones.</p>"},
+{u:"u6",src:"Actividad previa · paper de cfDNA",q:"¿Por qué el análisis de cfDNA en sangre materna se considera un test de tamizaje y no un diagnóstico? Justificá con las causas de resultados discordantes.",a:"<ul class='tight'><li>No analiza <b>células fetales</b>: analiza una <b>mezcla</b> de cfDNA mayormente <b>materno</b> con una fracción de origen <b>placentario</b> (trofoblasto), y detecta desbalances <b>cuantitativos</b> muy pequeños entre cromosomas.</li><li>El genoma de la <b>placenta</b> puede no coincidir con el del feto ni con el de la madre. De ahí los <b>falsos positivos</b>: mosaicismo placentario confinado (típico en T13 y monosomía X), mosaicismo fetal, <b>gemelo evanescente</b>, alteraciones cromosómicas <b>maternas</b> (mosaicismos 45,X/47,XXX, CNVs benignas), <b>cáncer materno</b> o leiomiomas que liberan ADN con desbalances, y trasplantes de donante masculino.</li><li>Y los <b>falsos negativos</b>: fracción fetal baja (obesidad materna, embarazo temprano, gestación múltiple), triploidía, mosaicismo, o una placenta euploide con feto aneuploide.</li><li>El <b>VPP depende de la prevalencia</b>: en población de bajo riesgo cae bastante aunque sensibilidad y especificidad sigan altas.</li><li><b>Conclusión:</b> todo positivo debe confirmarse con una prueba <b>diagnóstica invasiva</b> (amniocentesis o biopsia corial, con cariotipo o microarray), y un negativo no descarta otras anomalías: las trisomías comunes son sólo ~un tercio de lo que detecta un cariotipo.</li></ul>"}
+];
+
+var RECURSOS=`
+<div>
+ <p class="eyebrow">Recursos</p>
+ <h3 style="font-size:1.5rem;margin-bottom:.3em">Chuletas, mapas y tablas</h3>
+ <p class="lead">Todo lo que conviene tener fresco el día antes.</p>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">1 · El camino de los archivos</h4>
+ <div class="flow" style="margin-bottom:14px"><span>FASTQ</span><i>→</i><span>SAM</span><i>→</i><span>BAM + BAI</span><i>→</i><span>VCF</span><i>→</i><span>VCF anotado</span></div>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Archivo</th><th>Qué contiene</th><th>Se genera con</th></tr></thead>
+  <tbody>
+   <tr><td class="mono">FASTQ</td><td>Reads crudas + <b>calidad por base</b></td><td>El secuenciador (R1 y R2 si es paired-end)</td></tr>
+   <tr><td class="mono">FASTA</td><td>Sólo identificador + secuencia</td><td>Es el formato del genoma de referencia</td></tr>
+   <tr><td class="mono">SAM</td><td>Lecturas <b>alineadas</b>, en texto</td><td>BWA MEM</td></tr>
+   <tr><td class="mono">BAM / BAI</td><td>Lo mismo en binario / su índice</td><td>Samtools (view, sort, index)</td></tr>
+   <tr><td class="mono">VCF</td><td><b>Variantes</b> + genotipos: CHROM, POS, REF, ALT, QUAL, INFO</td><td>FreeBayes (variant calling), bcftools norm</td></tr>
+   <tr><td class="mono">VCF anotado</td><td>+ gen, efecto, IMPACT, HGVS, ClinVar, frecuencias</td><td>SnpEff / SnpSift</td></tr>
+   <tr><td class="mono">PED / .tfam</td><td>Pedigrí: familia, individuo, padre, madre, sexo, fenotipo</td><td>Lo arma quien diseña el estudio</td></tr>
+   <tr><td class="mono">HTML</td><td>Reportes de FastQC/MultiQC y resumen de SnpEff</td><td>FastQC, MultiQC, SnpEff</td></tr>
+  </tbody>
+ </table></div>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">2 · Cada herramienta y la pregunta que responde</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Herramienta</th><th>Pregunta</th></tr></thead>
+  <tbody>
+   <tr><td><b>FastQC / MultiQC</b></td><td>¿Qué calidad tienen mis lecturas? ¿Cómo se ven todas juntas?</td></tr>
+   <tr><td><b>BWA MEM</b></td><td>¿Dónde va cada lectura en el genoma?</td></tr>
+   <tr><td><b>Samtools</b></td><td>¿Cómo proceso, ordeno e indexo los alineamientos?</td></tr>
+   <tr><td><b>FreeBayes</b></td><td>¿Qué variantes hay respecto de la referencia?</td></tr>
+   <tr><td><b>bcftools norm</b></td><td>¿Cómo normalizo el VCF para poder compararlo con bases externas?</td></tr>
+   <tr><td><b>SnpEff</b></td><td>¿Qué efecto funcional tiene cada variante?</td></tr>
+   <tr><td><b>SnpSift</b></td><td>¿Cómo anoto y filtro según criterios?</td></tr>
+   <tr><td><b>ClinVar</b></td><td>¿Ya hay información clínica sobre esta variante?</td></tr>
+   <tr><td><b>1000 Genomes / gnomAD</b></td><td>¿Qué tan frecuente es en la población?</td></tr>
+   <tr><td><b>UniProt</b></td><td>¿Cae en un dominio funcional de la proteína?</td></tr>
+   <tr><td><b>ACMG/AMP</b></td><td>¿Cómo integro toda la evidencia para clasificarla?</td></tr>
+   <tr><td><b>IGV</b></td><td>¿Cómo se ven las lecturas alineadas en esa posición? (profundidad, proporción de alelos)</td></tr>
+  </tbody>
+ </table></div>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">3 · Tecnologías de secuenciación, una al lado de la otra</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Tecnología</th><th>Gen.</th><th>¿Por síntesis?</th><th>Detección</th><th>Fuerte / Débil</th></tr></thead>
+  <tbody>
+   <tr><td><b>Sanger</b></td><td>1ª</td><td>Sí</td><td>ddNTP fluorescentes, electroforesis capilar</td><td>Alta calidad, sigue siendo el estándar de <b>validación técnica</b> / Muy baja escala</td></tr>
+   <tr><td><b>454 · Pirosecuenciación</b></td><td>2ª</td><td>Sí</td><td>PPi → luz</td><td>Lecturas más largas que Illumina en su momento / <b>Homopolímeros</b></td></tr>
+   <tr><td><b>Ion Torrent</b></td><td>2ª</td><td>Sí</td><td>H⁺ → cambio de potencial</td><td>Rápido, sin óptica / <b>Homopolímeros</b></td></tr>
+   <tr><td><b>Illumina</b></td><td>2ª</td><td>Sí</td><td>Fluoróforos + <b>terminadores reversibles</b> (bridge PCR, clusters)</td><td>Throughput enorme, bajo costo por base, alta precisión, paired-end / Reads <b>cortas</b>: repetitivas y de novo</td></tr>
+   <tr><td><b>PacBio SMRT</b></td><td>3ª</td><td>Sí</td><td>Fluorescencia en tiempo real en un <b>ZMW</b></td><td>Long reads, consenso HiFi de alta precisión / Costo</td></tr>
+   <tr><td><b>Oxford Nanopore</b></td><td>3ª</td><td><b>No</b></td><td>Cambios en la <b>corriente iónica</b> al pasar por el nanoporo</td><td>Reads ultra largas, portátil, tiempo real / Mayor error por base individual</td></tr>
+   <tr><td><b>SNP array</b></td><td>—</td><td><b>No es secuenciación</b></td><td>Hibridación con sondas + fluorescencia</td><td>Barato, masivo, base de los GWAS / Sólo posiciones <b>ya conocidas</b></td></tr>
+  </tbody>
+ </table></div>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">4 · Los patrones de herencia en el VCF</h4>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Patrón</th><th>Afectado/a</th><th>Padre</th><th>Madre</th><th>Pista clínica</th></tr></thead>
+  <tbody>
+   <tr><td><b>Autosómico recesivo</b></td><td class="mono">1/1</td><td class="mono">0/1</td><td class="mono">0/1</td><td>Padres sanos, a menudo consanguíneos</td></tr>
+   <tr><td><b>Dominante del padre</b></td><td class="mono">0/1</td><td class="mono">0/1</td><td class="mono">0/0</td><td>Padre afectado o con expresividad variable</td></tr>
+   <tr><td><b>Dominante de la madre</b></td><td class="mono">0/1</td><td class="mono">0/0</td><td class="mono">0/1</td><td>Madre afectada</td></tr>
+   <tr><td><b>Dominante de novo</b></td><td class="mono">0/1</td><td class="mono">0/0</td><td class="mono">0/0</td><td>Padres sanos, caso aislado</td></tr>
+   <tr><td><b>No heredada</b></td><td class="mono">0/0</td><td class="mono">0/1</td><td class="mono">0/1</td><td>La hija sana no recibió la variante</td></tr>
+  </tbody>
+ </table></div>
+ <p class="muted" style="margin-top:8px"><code>0</code> = alelo de referencia · <code>1</code> = alelo alternativo · <code>|</code> = phased (con fase) · <code>/</code> = sin fase.</p>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">5 · Cómo responder las preguntas “inventá un experimento”</h4>
+ <p>La cátedra repite el mismo molde en casi todos los exámenes. Si te falta algo del molde, perdés puntos aunque lo que digas esté bien.</p>
+ <ol class="tight">
+  <li><b>Hipótesis o pregunta</b> concreta, con moléculas y organismos reales (no “el gen X en la enfermedad Y”).</li>
+  <li><b>Diseño experimental:</b> qué grupos comparo (casos/controles, tratado/no tratado), <b>réplicas biológicas</b>, cómo tomo la muestra, en qué momento y lugar, qué extraigo.</li>
+  <li><b>Qué técnica elijo y por qué</b>: WGS / WES / panel / SNP array, short o long reads, profundidad. Justificar siempre con la pregunta.</li>
+  <li><b>Qué datos obtengo</b> (archivos: FASTQ, VCF…) vs. <b>qué información</b> obtengo (variantes anotadas, genes candidatos).</li>
+  <li><b>Inventá un resultado concreto</b> (con números o genes: “la variante aparece en el 85% de un grupo y el 10% del otro”).</li>
+  <li><b>Validación técnica</b> (Sanger, qPCR: ¿la medición es real?), <b>biológica</b> (otra cohorte) y <b>funcional</b> (knockout, CRISPR, modelo animal: ¿es causal?).</li>
+  <li><b>Nueva hipótesis</b> que se desprende del resultado, si la piden.</li>
+ </ol>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">6 · Los 10 errores que anulan una respuesta</h4>
+ <ul class="tight">
+  <li>Decir que un <b>exoma</b> informa sobre expresión o abundancia de transcriptos.</li>
+  <li>Confundir <b>QUAL</b> (confianza del llamado) con impacto o patogenicidad.</li>
+  <li>Confundir <b>IMPACT HIGH</b> (predicción funcional) con “patogénica”.</li>
+  <li>Decir que el <b>llamado</b> de variantes agrega información biológica (eso es la <b>anotación</b>).</li>
+  <li>Decir que las variantes se guardan en un <b>FASTQ</b> (van en el <b>VCF</b>).</li>
+  <li>Afirmar que las reads <b>cortas</b> son las buenas para de novo y repetitivas.</li>
+  <li>Decir que <b>toda</b> la 3ª generación es por síntesis (Nanopore no).</li>
+  <li>Tratar una <b>asociación</b> de GWAS como causa, o usar GWAS para diagnosticar.</li>
+  <li>Decir que salir de África <b>aumentó</b> la diversidad (la redujo: efecto fundador).</li>
+  <li>Afirmar que <b>AF = 0</b> demuestra que la variante no existe en la población.</li>
+ </ul>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">7 · Qué aparece en los modelos viejos y NO está en tus resúmenes</h4>
+ <p>Estos temas son de la parte de <b>transcriptómica y proteómica</b> de la materia (y de finales, no del primer parcial). Los dejo listados para que los reconozcas y no te frenes:</p>
+ <div class="deck2">
+  <div class="mini"><b>Transcriptómica</b><p>RNA-seq, diseño experimental de expresión, count matrix, análisis de expresión diferencial, p-valor ajustado, volcano plot y heatmaps, ontología génica y análisis de enriquecimiento, microarrays vs. RNA-seq, single-cell RNA-seq, alineadores splice-aware.</p></div>
+  <div class="mini"><b>Proteómica</b><p>Espectrometría de masas, huella peptídica (peptide mass fingerprinting), MALDI-TOF/TOF, MASCOT, modificaciones fijas y variables, mass tolerance y número de hits, geles bidimensionales, MS cuantitativa, correlación ARNm-proteína.</p></div>
+  <div class="mini"><b>Cáncer y cBioPortal</b><p>Variantes somáticas vs. germinales en tumores, secuenciar tumor + tejido normal, mutaciones driver, oncoprints y curvas de sobrevida en cBioPortal.</p></div>
+ </div>
+ <p class="muted" style="margin-top:10px">Lo único de esa lista que sí conviene tener a mano para el parcial es el concepto de <b>PRS</b> (aparece junto a GWAS en un multiple choice recurrente): está explicado al final de la Unidad 3.</p>
+</div>
+
+<div class="card">
+ <h4 style="font-size:1.1rem;margin-bottom:.5em">8 · Glosario</h4>
+ <input class="search" id="gsearch" type="search" placeholder="Buscar un término… (ej.: VCF, admixture, PVS1)" aria-label="Buscar en el glosario">
+ <p class="muted" id="gcount" style="margin:10px 0 12px"></p>
+ <div class="gloss" id="glosslist"></div>
+</div>
+`;
+
+var GLOSS=[
+["Anotación","Agregar información biológica a una secuencia o a una variante: gen, exón/intrón, efecto, impacto, frecuencia, evidencia clínica.","u2"],
+["Admixture","Proporción del genoma de un individuo atribuible a distintas poblaciones ancestrales.","u3"],
+["ACMG/AMP","Criterios para clasificar variantes en patogénica, probablemente patogénica, VUS, probablemente benigna o benigna.","u5"],
+["Alelo estrella (*2, *3)","Haplotipo farmacogenómico definido en PharmGKB: una combinación de variantes, no un único rsID.","u3"],
+["BAC","Bacterial Artificial Chromosome: vector usado por el HGP para clonar fragmentos grandes y construir el mapa físico.","u2"],
+["BAM / BAI","Alineamientos en formato binario / su índice, que permite acceder rápido a una región.","u4"],
+["Barcode","Etiqueta de secuencia que identifica de qué muestra viene cada fragmento cuando se multiplexan varias en una corrida.","u2"],
+["Bridge PCR","Amplificación en puente sobre la flow cell de Illumina que genera los clusters de copias idénticas.","u2"],
+["cfDNA","ADN libre circulante en plasma. En el embarazo mezcla ADN materno y placentario.","u6"],
+["ChIP-seq","Inmunoprecipitación de cromatina + secuenciación: dice en qué regiones del ADN está unida una proteína.","u3"],
+["ClinGen","Cura la evidencia de las relaciones gen-enfermedad y la sensibilidad a la dosis génica.","u3"],
+["ClinVar","Repositorio de variantes con su interpretación clínica; mirar review status (estrellas) y conflictos.","u3"],
+["Cluster","Conjunto de copias idénticas de un fragmento sobre la flow cell; amplifica la señal fluorescente.","u2"],
+["CNV","Copy Number Variant: cambio en el número de copias de una región del genoma.","u3"],
+["Cobertura / profundidad","Cuántas reads independientes cubren una posición (30X = ~30 veces en promedio).","u2"],
+["Cosegregación","Que una variante se herede junto con la enfermedad dentro de una familia; suma evidencia de causalidad.","u3"],
+["Cuello de botella","Reducción drástica del tamaño de una población, con pérdida de diversidad genética.","u3"],
+["dbSNP","Catálogo de identificadores (rsID) de variantes. Inclusivo y no curado.","u3"],
+["Deduplicación","Eliminar copias generadas por PCR para no sobreestimar la evidencia de una variante.","u4"],
+["De novo (ensamblado)","Reconstruir un genoma sin referencia, buscando solapamientos entre reads.","u2"],
+["De novo (variante)","Variante presente en el hijo y ausente en ambos padres.","u5"],
+["Desequilibrio de ligamiento (LD)","Tendencia de variantes cercanas a heredarse juntas; permite que un SNP marque toda una región.","u2"],
+["Duplicación segmentaria","Región de más de 5 kb con más del 90% de identidad de secuencia.","u3"],
+["Efecto fundador","Un grupo pequeño se separa y funda una población nueva llevando sólo parte de la diversidad original.","u3"],
+["ENCODE","Proyecto que cataloga elementos funcionales del genoma (ChIP-seq, ATAC-seq, DNase-seq) en muchos tipos celulares.","u3"],
+["Epigenoma","Conjunto de modificaciones que regulan la expresión sin cambiar la secuencia: metilación, histonas, cromatina.","u1"],
+["EST","Expressed Sequence Tag: fragmento de ADNc de un transcripto; ayuda a localizar exones al anotar.","u0"],
+["Exoma (WES)","Conjunto de exones (~1-2% del genoma), donde se concentran muchas variantes de enfermedad.","u2"],
+["FASTA","Identificador + secuencia. Formato del genoma de referencia.","u2"],
+["FASTQ","Reads + calidad por base. Lo que devuelve el secuenciador.","u2"],
+["Flow cell","Superficie de Illumina con oligos donde se unen los fragmentos y se forman los clusters.","u2"],
+["Fracción fetal","Proporción del cfDNA del plasma materno que proviene de la placenta; aumenta con la gestación.","u6"],
+["gnomAD","Base de frecuencias alélicas por población, construida con cientos de miles de exomas y genomas.","u3"],
+["GWAS","Estudio de asociación de todo el genoma: casos vs. controles. Da asociación, no causalidad.","u3"],
+["HGVS","Nomenclatura de variantes: c. a nivel de ADN codificante, p. a nivel de proteína.","u4"],
+["Hierarchical shotgun","Estrategia del HGP: mapear primero (BACs, mapa físico) y secuenciar después.","u2"],
+["Homopolímero","Serie de bases idénticas consecutivas; complica a 454 e Ion Torrent.","u2"],
+["IMPACT","Nivel de efecto predicho por SnpEff: HIGH, MODERATE, LOW, MODIFIER. No es patogenicidad.","u4"],
+["Indel","Inserción o deleción de uno o pocos nucleótidos.","u2"],
+["Joint calling","Llamar variantes de todas las muestras del trío a la vez para aprovechar la información familiar.","u4"],
+["LINE / SINE","Retrotransposones: LINE ~21% del genoma y codifican transcriptasa reversa; SINE ~13% (Alu) y usan la de los LINE.","u0"],
+["Long reads","Lecturas largas (PacBio, Nanopore) que atraviesan regiones repetitivas y facilitan el ensamblado.","u2"],
+["Mapeo","Determinar en qué posición del genoma de referencia va cada read.","u4"],
+["Metagenómica","Estudio del material genético de una comunidad completa, sin cultivar los microorganismos.","u1"],
+["Multiplexado","Secuenciar varias muestras juntas con barcodes; reduce la profundidad por muestra.","u2"],
+["Nanoporo","Poro en una membrana que, al ser atravesado por el ADN, altera la corriente iónica: base de Nanopore.","u2"],
+["No call","Resultado no concluyente del cfDNA, típicamente por fracción fetal baja. No equivale a normal.","u6"],
+["Nucleosoma","ADN (~146 pb) enrollado alrededor de un octámero de histonas.","u0"],
+["ORF","Marco abierto de lectura: de un codón de inicio a un codón stop; posible región codificante.","u0"],
+["Paired-end","Secuenciar los dos extremos del mismo fragmento; mejora mapeo, ensamblado y detección de variantes estructurales.","u2"],
+["PharmGKB","Base de farmacogenómica: gen, droga, nivel de evidencia y alelos estrella.","u3"],
+["Pseudogén","Secuencia derivada de un gen que perdió funcionalidad; sin intrones si vino de retrotranscripción.","u0"],
+["PVS1 / PM2 / PP1 / PP4","Criterios ACMG: LoF en gen con mecanismo conocido / ausencia en poblaciones / cosegregación / fenotipo específico.","u5"],
+["QUAL","Confianza en que el llamado de variante sea real. No indica patogenicidad.","u4"],
+["Read group","Metadatos (ID, SM, PL) que identifican de qué muestra y lote viene cada lectura.","u4"],
+["rsID","Identificador estable de una variante en dbSNP (ej.: rs334).","u3"],
+["SAM","Alineamientos en formato de texto, salida de BWA MEM.","u4"],
+["Selección purificadora","Eliminación de variantes deletéreas de la población; por eso las de alto impacto suelen ser raras.","u4"],
+["Single molecule sequencing","Secuenciar moléculas individuales sin amplificación previa: base de la 3ª generación.","u2"],
+["SNP array","Plataforma de genotipificación de posiciones conocidas por hibridación y fluorescencia. No es secuenciación.","u2"],
+["SNV / SNP","Variante de un solo nucleótido; SNP es la que tiene cierta frecuencia poblacional.","u2"],
+["Spike-in","Variante patogénica real agregada artificialmente a un dataset, como en el TP2.","u5"],
+["Splicing alternativo","Distintas combinaciones de exones a partir de un mismo gen; ~95% de los genes multiexónicos.","u0"],
+["T2T","Telomere-to-Telomere: ensamblado continuo de punta a punta (2022 autosomas + X; 2023 el Y).","u2"],
+["Targeted sequencing","Secuenciar sólo regiones específicas de interés previamente seleccionadas.","u2"],
+["Transcriptoma","Todos los ARN de una célula en un momento y condición dados.","u1"],
+["Transposón","Secuencia de ADN capaz de moverse en el genoma; clase I con ARN intermediario, clase II con transposasa.","u0"],
+["Trío","Padre, madre y proband secuenciados juntos para usar el patrón de herencia como filtro.","u4"],
+["VCF","Variant Call Format: lista de variantes con CHROM, POS, REF, ALT, QUAL, INFO y genotipos.","u2"],
+["VPP","Valor predictivo positivo: si el test dio positivo, probabilidad de que sea real. Depende de la prevalencia.","u6"],
+["VUS","Variante de significado incierto: no hay evidencia suficiente para clasificarla.","u5"],
+["WGS","Whole Genome Sequencing: todo el genoma, incluidas regiones reguladoras y no codificantes.","u2"],
+["Whole-genome shotgun","Estrategia de Celera: fragmentar todo, secuenciar y ensamblar por computadora.","u2"],
+["ZMW","Zero-Mode Waveguide: pocillo donde PacBio observa una polimerasa en tiempo real.","u2"]
+];
+
+var FREQ=[
+ ["Exoma ≠ abundancia de transcriptos",7],
+ ["Short reads y ensamblado de novo",5],
+ ["Llamado vs. anotación de variantes",5],
+ ["GWAS para diagnosticar monogénicas",4],
+ ["PRS y GWAS (multiple choice)",3],
+ ["Variantes se guardan en un “fastq”",3],
+ ["3ª generación y secuenciación por síntesis",2],
+ ["Borrador 2001 y NGS de 2ª generación",2],
+ ["23andMe y “tercera generación”",2],
+ ["Efecto fundador y salida de África",2],
+ ["Filtrado de exomas: VCF, panel y frecuencia",2],
+ ["Caso del ratón ciervo (adaptación a la altura)",3],
+ ["1000 Genomes / gnomAD",2]
+];
+
+/* ---------- storage ---------- */
+function ST(k,v){
+  try{
+    if(v===undefined){var r=localStorage.getItem("gyp_"+k);return r?JSON.parse(r):null;}
+    localStorage.setItem("gyp_"+k,JSON.stringify(v));
+  }catch(e){}
+  return null;
+}
+var $=function(s,c){return (c||document).querySelector(s);};
+var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
+
+/* ---------- tabs ---------- */
+var TABS=["inicio","resumen","cards","quiz","sim","rec"];
+function goTab(name){
+  TABS.forEach(function(t){
+    var b=$("#t-"+t),p=$("#p-"+t);
+    var on=(t===name);
+    b.setAttribute("aria-selected",on?"true":"false");
+    p.hidden=!on;
+  });
+  window.scrollTo({top:0,behavior:"instant"});
+}
+TABS.forEach(function(t){$("#t-"+t).addEventListener("click",function(){goTab(t);});});
+$$("[data-go]").forEach(function(b){b.addEventListener("click",function(){goTab(b.getAttribute("data-go"));});});
+
+/* ---------- progreso / pileup ---------- */
+function doneSet(){return ST("done")||{};}
+function renderProgress(){
+  var d=doneSet(),n=0;
+  var pile=$("#pileup");pile.innerHTML="";
+  UNITS.forEach(function(u,i){
+    var r=document.createElement("div");
+    r.className="read";
+    r.style.setProperty("--c",u.v);
+    var off=(i*9)%20, w=Math.min(96-off,58+((i*13)%30));
+    r.style.width=w+"%";
+    r.style.marginLeft=off+"%";
+    r.setAttribute("data-done",d[u.id]?"1":"0");
+    r.title="Unidad "+u.n+" · "+u.t;
+    pile.appendChild(r);
+    if(d[u.id])n++;
+  });
+  $("#covtxt").textContent=n+" / 7 unidades";
+  $("#covpct").textContent=n+"X";
+  $$(".unitdone").forEach(function(c){c.checked=!!d[c.getAttribute("data-u")];});
+}
+function toggleDone(id,val){var d=doneSet();d[id]=val;ST("done",d);renderProgress();}
+
+/* ---------- inicio ---------- */
+(function(){
+  var chips=$("#unitchips");
+  UNITS.forEach(function(u){
+    var b=document.createElement("button");
+    b.className="chip";b.style.setProperty("--c",u.v);
+    b.innerHTML='<span class="sq"></span>'+u.n+" · "+u.t;
+    b.addEventListener("click",function(){
+      goTab("resumen");
+      setTimeout(function(){var el=$("#sec-"+u.id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},60);
+    });
+    chips.appendChild(b);
+  });
+  var f=$("#freq"),max=7;
+  FREQ.forEach(function(x){
+    var row=document.createElement("div");row.className="freqrow";
+    row.innerHTML='<div><div style="margin-bottom:4px">'+x[0]+'</div><div class="bar"><i style="width:'+Math.round(x[1]/max*100)+'%"></i></div></div><b>'+x[1]+'×</b>';
+    f.appendChild(row);
+  });
+})();
+
+/* ---------- resúmenes ---------- */
+(function(){
+  var nav=$("#sidenav"),wrap=$("#units");
+  UNITS.forEach(function(u){
+    var a=document.createElement("a");
+    a.href="#sec-"+u.id;a.style.setProperty("--c",u.v);
+    a.innerHTML='<span class="sq"></span><span>'+u.n+" · "+u.t+"</span>";
+    nav.appendChild(a);
+
+    var s=document.createElement("section");
+    s.className="unit";s.id="sec-"+u.id;s.style.setProperty("--c",u.v);
+    s.innerHTML='<header><div><span class="k">UNIDAD '+u.n+' · '+u.src.toUpperCase()+'</span><h3>'+u.t+'</h3></div>'+
+      '<label class="done"><input type="checkbox" class="unitdone" data-u="'+u.id+'"> Estudiada</label></header>'+SUM[u.id];
+    wrap.appendChild(s);
+  });
+  $$(".unitdone").forEach(function(c){
+    c.addEventListener("change",function(){toggleDone(c.getAttribute("data-u"),c.checked);});
+  });
+  renderProgress();
+})();
+
+/* ---------- flashcards ---------- */
+var fcDeck="all",fcIdx=0,fcList=[];
+function known(){return ST("known")||{};}
+function cardKey(c){return c.u+"|"+c.q.slice(0,40);}
+function buildDeck(){
+  var k=known();
+  fcList=CARDS.filter(function(c){
+    return (fcDeck==="all"||c.u===fcDeck) && !k[cardKey(c)];
+  });
+  if(fcIdx>=fcList.length)fcIdx=0;
+  renderCard();
+}
+function renderCard(){
+  var total=CARDS.filter(function(c){return fcDeck==="all"||c.u===fcDeck;}).length;
+  var left=fcList.length;
+  $("#fccount").textContent=left?("tarjeta "+(fcIdx+1)+" de "+left+"  ·  "+(total-left)+"/"+total+" sabidas"):(total+"/"+total+" sabidas");
+  $("#fcbar").style.width=(total?Math.round((total-left)/total*100):0)+"%";
+  $("#fc").classList.remove("flip");
+  if(!left){
+    $("#fcq").innerHTML="🎉 Terminaste este mazo. Reiniciá para volver a pasarlo.";
+    $("#fca").innerHTML="";
+    return;
+  }
+  var c=fcList[fcIdx];
+  var u=UNITS.filter(function(x){return x.id===c.u;})[0];
+  $("#fcq").innerHTML='<span class="pill gray" style="margin-bottom:10px">Unidad '+u.n+'</span><br>'+c.q;
+  $("#fca").innerHTML=c.a;
+}
+(function(){
+  var f=$("#fcfilters");
+  var mk=function(id,label){
+    var b=document.createElement("button");
+    b.textContent=label;b.setAttribute("aria-pressed",id===fcDeck?"true":"false");
+    b.addEventListener("click",function(){
+      fcDeck=id;fcIdx=0;
+      $$("button",f).forEach(function(x){x.setAttribute("aria-pressed","false");});
+      b.setAttribute("aria-pressed","true");
+      buildDeck();
+    });
+    f.appendChild(b);
+  };
+  f.className="filters";
+  mk("all","Todas ("+CARDS.length+")");
+  UNITS.forEach(function(u){
+    var n=CARDS.filter(function(c){return c.u===u.id;}).length;
+    mk(u.id,u.n+" · "+u.src+" ("+n+")");
+  });
+  $("#fc").addEventListener("click",function(){$("#fc").classList.toggle("flip");});
+  $("#fcnext").addEventListener("click",function(){if(fcList.length){fcIdx=(fcIdx+1)%fcList.length;renderCard();}});
+  $("#fcprev").addEventListener("click",function(){if(fcList.length){fcIdx=(fcIdx-1+fcList.length)%fcList.length;renderCard();}});
+  $("#fcagain").addEventListener("click",function(){if(fcList.length){fcIdx=(fcIdx+1)%fcList.length;renderCard();}});
+  $("#fcknow").addEventListener("click",function(){
+    if(!fcList.length)return;
+    var k=known();k[cardKey(fcList[fcIdx])]=1;ST("known",k);
+    buildDeck();
+  });
+  $("#fcreset").addEventListener("click",function(){
+    var k=known();
+    CARDS.forEach(function(c){if(fcDeck==="all"||c.u===fcDeck)delete k[cardKey(c)];});
+    ST("known",k);fcIdx=0;buildDeck();
+  });
+  document.addEventListener("keydown",function(e){
+    if($("#p-cards").hidden)return;
+    if(e.code==="Space"){e.preventDefault();$("#fc").classList.toggle("flip");}
+    if(e.code==="ArrowRight")$("#fcnext").click();
+    if(e.code==="ArrowLeft")$("#fcprev").click();
+  });
+  buildDeck();
+})();
+
+/* ---------- banco de preguntas ---------- */
+var qFilter="all",qScore=0,qAnswered={};
+function unitOf(id){return UNITS.filter(function(x){return x.id===id;})[0];}
+function qCard(q,i,opts){
+  opts=opts||{};
+  var el=document.createElement("div");
+  el.className="q";
+  var u=unitOf(q.u);
+  var head='<div class="stem"><span class="src">'+(opts.num?("Pregunta "+opts.num+" · "):"")+"Unidad "+u.n+" · "+q.src+"</span>"+q.q+"</div>";
+  var body="";
+  if(q.t==="vf"){
+    body='<div class="opts"><button class="opt" data-i="0"><span class="l">V</span><span>Verdadero</span></button>'+
+         '<button class="opt" data-i="1"><span class="l">F</span><span>Falso</span></button></div>';
+  }else{
+    body='<div class="opts">'+q.opts.map(function(o,j){
+      return '<button class="opt" data-i="'+j+'"><span class="l">'+"abcdef"[j]+'</span><span>'+o+'</span></button>';
+    }).join("")+"</div>";
+  }
+  el.innerHTML=head+body+'<div class="why" hidden></div>';
+  var correct=(q.t==="vf")?(q.ok?0:1):q.ok;
+  $$(".opt",el).forEach(function(b){
+    b.addEventListener("click",function(){
+      if(el.getAttribute("data-done"))return;
+      el.setAttribute("data-done","1");
+      var chosen=+b.getAttribute("data-i");
+      $$(".opt",el).forEach(function(x,j){
+        x.disabled=true;
+        if(j===correct)x.setAttribute("data-state","ok");
+        else if(j===chosen)x.setAttribute("data-state","bad");
+      });
+      var w=$(".why",el);
+      w.hidden=false;
+      w.innerHTML="<b>"+(chosen===correct?"Correcto.":"Incorrecto.")+"</b> "+
+        (q.t==="vf"?("La afirmación es <b>"+(q.ok?"VERDADERA":"FALSA")+"</b>. "):"")+q.why;
+      if(opts.onAnswer)opts.onAnswer(chosen===correct,i);
+    });
+  });
+  return el;
+}
+function renderQuiz(){
+  var list=$("#qlist");list.innerHTML="";
+  var sel=QS.filter(function(q){return qFilter==="all"||q.u===qFilter;});
+  $("#qtotal").textContent=sel.length;
+  qScore=0;qAnswered={};$("#qscore").textContent="0";
+  sel.forEach(function(q,i){
+    list.appendChild(qCard(q,i,{onAnswer:function(ok){
+      if(ok){qScore++;$("#qscore").textContent=qScore;}
+    }}));
+  });
+}
+(function(){
+  var f=$("#qfilters");
+  var mk=function(id,label){
+    var b=document.createElement("button");
+    b.textContent=label;b.setAttribute("aria-pressed",id===qFilter?"true":"false");
+    b.addEventListener("click",function(){
+      qFilter=id;
+      $$("button",f).forEach(function(x){x.setAttribute("aria-pressed","false");});
+      b.setAttribute("aria-pressed","true");
+      renderQuiz();
+    });
+    f.appendChild(b);
+  };
+  mk("all","Todas ("+QS.length+")");
+  UNITS.forEach(function(u){
+    var n=QS.filter(function(q){return q.u===u.id;}).length;
+    if(n)mk(u.id,"Unidad "+u.n+" ("+n+")");
+  });
+  $("#qreset").addEventListener("click",renderQuiz);
+  renderQuiz();
+
+  var d=$("#devlist");
+  DEV.forEach(function(x){
+    var u=unitOf(x.u);
+    var el=document.createElement("details");
+    el.className="model";
+    el.innerHTML="<summary><span>"+x.q+"</span></summary><div class='body'><p class='muted' style='margin-bottom:.6em'>Unidad "+u.n+" · "+x.src+"</p>"+x.a+"</div>";
+    d.appendChild(el);
+  });
+})();
+
+/* ---------- simulacro ---------- */
+var simTimer=null,simLeft=0,simSel=[],simDev=[],simScore=0,simCount=0;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fmt(s){var m=Math.floor(s/60),x=s%60;return m+":"+(x<10?"0":"")+x;}
+function stopSim(){if(simTimer){clearInterval(simTimer);simTimer=null;}}
+function startSim(){
+  var vf=shuffle(QS.filter(function(q){return q.t==="vf";})).slice(0,6);
+  var mc=shuffle(QS.filter(function(q){return q.t==="mc";})).slice(0,4);
+  simSel=vf.concat(mc);simDev=shuffle(DEV).slice(0,3);
+  simScore=0;simCount=0;
+  var body=$("#simbody");body.innerHTML="";
+  var h1=document.createElement("h4");h1.textContent="Parte I y II · Objetivas";h1.style.marginTop="6px";body.appendChild(h1);
+  simSel.forEach(function(q,i){
+    body.appendChild(qCard(q,i,{num:i+1,onAnswer:function(ok){simCount++;if(ok)simScore++;}}));
+  });
+  var h2=document.createElement("h4");h2.textContent="Parte III · Desarrollo";body.appendChild(h2);
+  var p=document.createElement("p");p.className="muted";
+  p.textContent="Escribilas en papel. Al entregar vas a poder abrir los criterios de corrección.";
+  body.appendChild(p);
+  simDev.forEach(function(x,i){
+    var el=document.createElement("details");el.className="model";
+    el.innerHTML="<summary><span>"+(i+11)+". "+x.q+"</span></summary><div class='body'><p class='muted' style='margin-bottom:.6em'>"+x.src+"</p>"+x.a+"</div>";
+    body.appendChild(el);
+  });
+  $("#simstart").hidden=true;$("#simrun").hidden=false;
+  simLeft=45*60;$("#simtimer").textContent=fmt(simLeft);
+  $("#simtimer").classList.remove("low");
+  stopSim();
+  simTimer=setInterval(function(){
+    simLeft--;
+    $("#simtimer").textContent=fmt(Math.max(simLeft,0));
+    if(simLeft<=300)$("#simtimer").classList.add("low");
+    if(simLeft<=0)endSim(true);
+  },1000);
+}
+function endSim(timeup){
+  stopSim();
+  var pct=simSel.length?Math.round(simScore/simSel.length*100):0;
+  var box=document.createElement("div");
+  box.className="card resultcard";
+  box.innerHTML='<p class="eyebrow">'+(timeup?"Se acabó el tiempo":"Entregado")+'</p>'+
+    '<div class="big">'+simScore+" / "+simSel.length+"</div>"+
+    '<p style="margin-top:10px;font-size:1.05rem">'+pct+"% en la parte objetiva"+(simCount<simSel.length?(" · dejaste "+(simSel.length-simCount)+" sin responder"):"")+"</p>"+
+    '<p class="muted" style="margin:6px 0 0">'+(pct>=50?"Estarías aprobando esta parte. Ahora corregí las de desarrollo con los criterios.":"Todavía no llegás al 50%. Revisá las explicaciones de las que fallaste y volvé a las tarjetas de esa unidad.")+"</p>";
+  $("#simbody").insertBefore(box,$("#simbody").firstChild);
+  $$("#simbody .q").forEach(function(el){
+    if(!el.getAttribute("data-done")){
+      var b=$(".opt",el);
+      if(b)b.click();
+    }
+  });
+  $$("#simbody details.model").forEach(function(d){d.open=true;});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("#simgo").addEventListener("click",startSim);
+$("#simend").addEventListener("click",function(){endSim(false);});
+$("#simquit").addEventListener("click",function(){
+  stopSim();$("#simrun").hidden=true;$("#simstart").hidden=false;$("#simbody").innerHTML="";
+});
+
+/* ---------- recursos + glosario ---------- */
+(function(){
+  $("#recursos").innerHTML=RECURSOS;
+  var list=$("#glosslist"),count=$("#gcount"),input=$("#gsearch");
+  function draw(term){
+    term=(term||"").toLowerCase().trim();
+    list.innerHTML="";
+    var n=0;
+    GLOSS.slice().sort(function(a,b){return a[0].localeCompare(b[0],"es");}).forEach(function(g){
+      if(term && (g[0]+" "+g[1]).toLowerCase().indexOf(term)===-1)return;
+      n++;
+      var u=unitOf(g[2]);
+      var el=document.createElement("div");
+      el.className="gterm";
+      el.style.borderLeft="3px solid "+u.v;
+      el.innerHTML='<span class="tag">Unidad '+u.n+'</span><b>'+g[0]+'</b><span>'+g[1]+'</span>';
+      list.appendChild(el);
+    });
+    count.textContent=n+" término"+(n===1?"":"s")+(term?" para “"+term+"”":" en total");
+  }
+  input.addEventListener("input",function(){draw(input.value);});
+  draw("");
+})();
+</script>
+
+</body>
+</html>
