@@ -520,11 +520,265 @@ def tp2():
     return s + "</svg>"
 
 
+# ========================================================== MAPA MENTAL =====
+BRANCHES = [
+    ("1", "El genoma humano", "Actividad previa", "#a8560c", "dna", [
+        ("3,2 × 10⁹ pb · 22 pares de autosomas + sexuales.", 0),
+        ("Sólo 2–3% codifica proteínas (~23.000 genes);", 1),
+        ("los exones son ~1% del genoma.", 2),
+        ("Fenotipo = genotipo + ambiente + historia de vida", 0),
+        ("+ epigenética. El genoma condiciona, no determina.", 2),
+        ("No codificante: promotores, enhancers, silencers,", 0),
+        ("ARNt, ARNr, miARN, siARN, lncRNA.", 2),
+        ("Repetitivas: LINE 21% · SINE/Alu 13% · mini y", 0),
+        ("microsatélites · telómeros · pseudogenes.", 2),
+        ("Transposones ~45%: clase I (vía ARN, transcriptasa", 0),
+        ("reversa) vs clase II (transposasa, cortar y pegar).", 2),
+        ("Un gen → muchas proteínas: splicing alternativo (95%),", 1),
+        ("promotores alternativos, edición de ARN.", 2),
+        ("Organización: nucleoide y plásmidos vs nucleosoma →", 0),
+        ("cromatina → cromosoma. Endosimbiosis.", 2),
+        ("Identificar genes: ORF en 6 marcos, TATA, GT–AG,", 0),
+        ("ESTs, homología y conservación.", 2),
+    ]),
+    ("2", "Ómicas y validación", "Clase 1", "#d31c6b", "dna", [
+        ("Genética (genes sueltos) vs genómica (genoma completo)", 0),
+        ("vs genómica funcional: cómo el genoma se hace función.", 2),
+        ("Transcriptoma · proteoma · metaboloma · epigenoma ·", 0),
+        ("metagenómica · microbioma. Todos dinámicos.", 2),
+        ("Qué estudio en cada molécula: ADN = secuencia;", 1),
+        ("ARN = abundancia; proteína = abundancia (MS, ELISA).", 2),
+        ("Hypothesis-driven vs discovery-driven: las ómicas", 0),
+        ("generan hipótesis a partir de datos masivos.", 2),
+        ("Validación técnica (¿la medición es real? Sanger, qPCR),", 1),
+        ("biológica (otra cohorte) y funcional (KO, CRISPR).", 1),
+        ("Casos: Pääbo (ADNmt → genoma nuclear; 1–4% neandertal)", 0),
+        ("y C4 en esquizofrenia (poda sináptica, ratones KO).", 2),
+        ("Somos >99,9% iguales: variantes de susceptibilidad ≠", 0),
+        ("mutación causal (esquizofrenia vs fibrosis quística).", 2),
+    ]),
+    ("3", "Proyecto Genoma Humano", "Clase 2", "#7333e0", "ref", [
+        ("HGP 1990–2003: público, internacional, secuencias", 0),
+        ("liberadas en 24 h. 20 voluntarios, ~70% de uno solo.", 2),
+        ("Collins: hierarchical shotgun (BAC → mapa físico →", 1),
+        ("secuenciar). Venter: whole-genome shotgun.", 1),
+        ("Los dos usaron Sanger: cambia la estrategia, no la", 1),
+        ("química. Celera además usó los datos públicos.", 2),
+        ("2001 borradores · 2004 eucromatina 99%, 341 gaps,", 0),
+        ("20.000–25.000 genes.", 2),
+        ("2022 T2T (CHM13: autosomas + X, es 46,XX) ·", 0),
+        ("2023 cromosoma Y (HG002), con PacBio HiFi + Nanopore.", 2),
+        ("El problema de la heterocromatina era el ensamblaje", 1),
+        ("de secuencias repetitivas, no la química.", 1),
+        ("Secuenciar ≠ anotar. GENCODE, Ensembl, RefSeq y CHESS", 1),
+        ("dan números de genes distintos.", 2),
+    ]),
+    ("4", "NGS y tecnologías", "Clase 2", "#0a6dbb", "align", [
+        ("2ª generación: secuenciación por síntesis, masiva en", 0),
+        ("paralelo, microfluídica, amplificación previa.", 2),
+        ("454 → PPi y luz · Ion Torrent → H⁺ y potencial ·", 1),
+        ("Illumina → fluoróforos + terminadores reversibles.", 1),
+        ("Homopolímeros: problema de 454 e Ion Torrent; Illumina", 1),
+        ("los resuelve (una base por ciclo).", 2),
+        ("3ª generación: molécula única y long reads. PacBio", 1),
+        ("(ZMW, por síntesis) · Nanopore (corriente iónica, NO).", 1),
+        ("FASTQ = reads + calidad (cae al final por", 0),
+        ("desincronización) vs FASTA = sólo secuencia.", 2),
+        ("Profundidad 30X · paired-end · multiplexado y barcodes", 0),
+        ("(más muestras = menos profundidad).", 2),
+        ("De novo vs contra referencia → mapeo → variant calling", 0),
+        ("→ VCF (CHROM, POS, REF, ALT, QUAL).", 2),
+        ("WGS · WES · targeted (captura por sondas o PCR).", 0),
+        ("SNP array = genotipificación de posiciones conocidas,", 1),
+        ("no secuenciación: LD, GWAS, servicios tipo 23andMe.", 1),
+    ]),
+    ("5", "Variación y poblaciones", "Clase 3", "#0c7d73", "family", [
+        ("Somos diploides: homocigota (A/A) vs heterocigota (A/G).", 0),
+        ("Tipos: SNV/SNP, indels, estructurales (deleciones,", 0),
+        ("duplicaciones, inversiones, translocaciones), CNV.", 2),
+        ("Germinales (heredables, en todas las células) vs", 1),
+        ("somáticas (aparecen en un linaje durante la vida).", 1),
+        ("Primeros diploides: HuRef (Levy 2007) y Watson", 0),
+        ("(Wheeler 2008): 7,4X, <1 M USD, ~3,3 M de SNPs.", 2),
+        ("Duplicaciones segmentarias: >5 kb y >90% identidad.", 0),
+        ("CNVs detectadas por CGH y SNP arrays.", 2),
+        ("Mayor diversidad genética en África; fuera de África", 1),
+        ("hay menos por efecto fundador.", 1),
+        ("Cuello de botella (la población se reduce) vs efecto", 0),
+        ("fundador (un grupo se separa) · admixture.", 2),
+        ("Earth BioGenome y Darwin Tree of Life: sólo el 1% de", 0),
+        ("los eucariotas; long reads, ensamblado y anotación.", 2),
+    ]),
+    ("6", "Bases de datos y GWAS", "Clase 3", "#b01345", "db", [
+        ("dbSNP: identificadores (rsID), inclusiva y NO curada.", 0),
+        ("1000 Genomes: variabilidad poblacional, frecuencias,", 0),
+        ("haplotipos y LD (3202 muestras, 26 poblaciones).", 2),
+        ("gnomAD: frecuencias alélicas por población; es la que", 1),
+        ("se usa hoy para filtrar. Ensembl: consecuencias.", 1),
+        ("ENCODE: elementos funcionales (ChIP-seq, ATAC-seq,", 0),
+        ("DNase-seq). Crítica: estado molecular ≠ función causal.", 2),
+        ("ChIP-seq: anticuerpo + beads → ADN unido → secuenciar", 0),
+        ("→ dónde estaba unida la proteína.", 2),
+        ("ClinVar: interpretación clínica, review status", 1),
+        ("(estrellas) y conflictos → VUS. ClinGen: gen-enfermedad", 1),
+        ("y dosage. PharmGKB: alelos estrella (haplotipos).", 1),
+        ("GWAS: casos vs controles → genotipificación → QC →", 0),
+        ("PLINK → Manhattan plot → follow-up.", 2),
+        ("Asociación ≠ causalidad. Cosegregación familiar.", 1),
+        ("El PRS usa los resultados de los GWAS como pesos.", 0),
+    ]),
+    ("7", "TP 1 · del FASTQ a la variante", "Trabajo práctico 1", "#4b46cf", "fastq", [
+        ("Trío con osteopetrosis, padres consanguíneos y sanos", 0),
+        ("→ hipótesis de herencia autosómica recesiva.", 2),
+        ("¿Por qué exoma? ~1% del genoma pero concentra las", 0),
+        ("variantes de enfermedad; más barato que WGS.", 2),
+        ("FASTQ → FastQC/MultiQC → BWA MEM (SAM, read groups)", 1),
+        ("→ samtools (BAM + BAI) → dedup → FreeBayes (VCF).", 1),
+        ("La deduplicación evita que una molécula amplificada", 0),
+        ("infle la evidencia de una variante.", 2),
+        ("QUAL = confianza del llamado, NO patogenicidad.", 1),
+        ("SnpEff: efecto, IMPACT (HIGH…MODIFIER) y HGVS", 0),
+        ("(c.290G>A / p.Trp97*).", 2),
+        ("Filtro: 1/1 + 0/1 + 0/1 · HIGH o MODERATE · AF <1%", 1),
+        ("· ClinVar → candidata CA2 p.Trp97*.", 1),
+        ("ACMG: PVS1 + PM2 + PP1 + PP4 = PATOGÉNICA.", 1),
+    ]),
+    ("8", "TP 2 · anotar, filtrar y clasificar", "Trabajo práctico 2", "#c2185b", "vcf", [
+        ("Arranca en VCF + .tfam: familia CEPH/Utah 1463 (sana)", 0),
+        ("con una variante patogénica real agregada (spike-in).", 2),
+        ("El pedigrí define el patrón: recesivo (1/1, 0/1, 0/1),", 1),
+        ("dominante heredado, de novo (0/1, 0/0, 0/0).", 1),
+        ("Todo en GRCh38: VCF, FASTA, SnpEff, ClinVar y 1000G.", 1),
+        ("Las coordenadas cambian entre versiones.", 2),
+        ("bcftools norm: multialélicas e indels (left alignment).", 0),
+        ("Phased 0|1 se normaliza a 0/1.", 2),
+        ("Capas: SnpEff → ClinVar → 1000 Genomes (antes se sacan", 0),
+        ("los AF/AC/AN propios del VCF).", 2),
+        ("La mayoría de las variantes son LOW/MODIFIER y no están", 0),
+        ("en ClinVar: es lo esperable en una persona sana.", 2),
+        ("Orden: herencia → impacto → frecuencia → evidencia", 1),
+        ("clínica → relación gen-fenotipo → ACMG/AMP.", 1),
+        ("ACMG: PVS1, PS1/PM5, PM2, PP1, PP4 y BA1/BS1 →", 1),
+        ("patogénica … VUS … benigna.", 1),
+    ]),
+]
+
+
+def branch_card(x, y, w, num, title, src, color, icon, bullets):
+    lh = 20.5
+    h = 86 + len(bullets) * lh + 16
+    s = rrect(x, y, w, h, 16, CARD, LINE, 1.8)
+    s += '<rect x="%g" y="%g" width="%g" height="5" rx="2.5" fill="%s"/>' % (x + 18, y, w - 36, color)
+    s += '<circle cx="%g" cy="%g" r="16" fill="%s"/>' % (x + 32, y + 38, color)
+    s += txt(x + 32, y + 45, num, 18, "#ffffff", "800", "middle", FONT)
+    s += txt(x + 58, y + 36, title, 21, INK, "800", font=FONT)
+    s += txt(x + 58, y + 58, src.upper(), 11.5, INK3, "700", font=BODY, ls="2.2")
+    s += ICONS[icon](x + w - 58, y + 14, color)
+    s += '<rect x="%g" y="%g" width="3" height="%g" rx="1.5" fill="%s" opacity=".35"/>' % (
+        x + 24, y + 76, len(bullets) * lh + 2, color)
+    for i, (t, kind) in enumerate(bullets):
+        yy = y + 92 + i * lh
+        if kind != 2:
+            s += '<circle cx="%g" cy="%g" r="3" fill="%s"/>' % (x + 25.5, yy - 4.5, color)
+        s += txt(x + 38, yy, t, 14, color if kind == 1 else INK2, "700" if kind == 1 else "400")
+    return s, h
+
+
+def card_h(b):
+    return 86 + len(b[5]) * 20.5 + 16
+
+
+def mapa():
+    gap = 18
+    top = 168
+    colL = sum(card_h(b) for b in BRANCHES[:4]) + 3 * gap
+    colR = sum(card_h(b) for b in BRANCHES[4:]) + 3 * gap
+    H = top + max(colL, colR) + 130
+    s = svg_open(H)
+    s += txt(60, 74, "Mapa mental · lo que entra en el primer parcial", 40, INK, "800", font=FONT)
+    s += txt(60, 108, "Genómica: actividad previa, clases 1 a 3 y los dos trabajos prácticos", 19, INK2)
+    s += '<rect x="60" y="122" width="120" height="6" rx="3" fill="%s"/>' % PINK
+
+    lw, rw = 540, 540
+    lx, rx = 60, 1080
+    left_pos, right_pos = [], []
+    yy = top
+    for i in range(4):
+        left_pos.append(yy)
+        yy += card_h(BRANCHES[i]) + gap
+    yy = top
+    for i in range(4, 8):
+        right_pos.append(yy)
+        yy += card_h(BRANCHES[i]) + gap
+
+    # hub
+    hw, hh = 280, 292
+    hx = 700
+    hy = top + max(colL, colR) / 2 - hh / 2
+    for i, b in enumerate(BRANCHES):
+        color = b[3]
+        if i < 4:
+            y0 = left_pos[i]
+            hgt = card_h(b)
+            s += ('<path d="M %g %g C %g %g, %g %g, %g %g" fill="none" stroke="%s" '
+                  'stroke-width="4" stroke-linecap="round" opacity=".85"/>'
+                  % (hx + 4, hy + hh / 2, hx - 50, hy + hh / 2, lx + lw + 70, y0 + hgt / 2,
+                     lx + lw + 6, y0 + hgt / 2, color))
+            s += '<circle cx="%g" cy="%g" r="6" fill="%s"/>' % (lx + lw + 6, y0 + hgt / 2, color)
+        else:
+            y0 = right_pos[i - 4]
+            hgt = card_h(b)
+            s += ('<path d="M %g %g C %g %g, %g %g, %g %g" fill="none" stroke="%s" '
+                  'stroke-width="4" stroke-linecap="round" opacity=".85"/>'
+                  % (hx + hw - 4, hy + hh / 2, hx + hw + 50, hy + hh / 2, rx - 70, y0 + hgt / 2,
+                     rx - 6, y0 + hgt / 2, color))
+            s += '<circle cx="%g" cy="%g" r="6" fill="%s"/>' % (rx - 6, y0 + hgt / 2, color)
+
+    for i, (num, title, src, color, icon, bullets) in enumerate(BRANCHES):
+        if i < 4:
+            c, _ = branch_card(lx, left_pos[i], lw, num, title, src, color, icon, bullets)
+        else:
+            c, _ = branch_card(rx, right_pos[i - 4], rw, num, title, src, color, icon, bullets)
+        s += c
+
+    # nodo central
+    s += rrect(hx, hy, hw, hh, 24, "#ffffff", PINK, 3)
+    s += txt(hx + hw / 2, hy + 58, "GENÓMICA", 40, PINK, "800", "middle", FONT)
+    s += txt(hx + hw / 2, hy + 86, "primer parcial", 19, INK2, "600", "middle")
+    s += '<line x1="%g" y1="%g" x2="%g" y2="%g" stroke="%s" stroke-width="1.6"/>' % (
+        hx + 40, hy + 104, hx + hw - 40, hy + 104, LINE2)
+    s += txt(hx + hw / 2, hy + 130, "Del genoma a la función:", 14.5, INK2, "700", "middle")
+    s += lines(hx + 26, hy + 154, [
+        "qué hay en el genoma, cómo se",
+        "lee, cómo varía entre personas",
+        "y cómo se interpreta una variante.",
+    ], 14, INK2, 20)
+    chips = ["Act. previa", "Clase 1", "Clase 2", "Clase 3", "TP 1", "TP 2"]
+    cxp, cyp = hx + 22, hy + 228
+    for c in chips:
+        _, cwid = chip(cxp, cyp, c, PINK_S, PINK, PINK_D, 11.5, BODY, 8, 22)
+        if cxp + cwid > hx + hw - 18:
+            cxp, cyp = hx + 22, cyp + 28
+        ch, cwid = chip(cxp, cyp, c, PINK_S, PINK, PINK_D, 11.5, BODY, 8, 22)
+        s += ch
+        cxp += cwid + 6
+
+    # pie: los pares que no se confunden
+    fy = top + max(colL, colR) + 10
+    s += rrect(60, fy, 1560, 88, 14, RED_S, RED, 1.4)
+    s += txt(88, fy + 30, "LOS PARES QUE NO SE PUEDEN CONFUNDIR", 12.5, RED, "700", font=BODY, ls="2.4")
+    s += lines(88, fy + 56, [
+        "secuenciar ≠ anotar    ·    llamado de variantes ≠ anotación de variantes    ·    QUAL ≠ impacto biológico    ·    IMPACT ≠ patogenicidad",
+        "asociación (GWAS) ≠ causalidad    ·    raro ≠ patogénico    ·    exoma ≠ expresión    ·    SNP array ≠ secuenciación    ·    AF = 0 ≠ inexistente",
+    ], 15, INK2, 22)
+    return s + "</svg>"
+
+
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     out = os.path.join(root, "assets")
     os.makedirs(out, exist_ok=True)
-    for name, fn in (("tp1-flujo", tp1), ("tp2-flujo", tp2)):
+    for name, fn in (("tp1-flujo", tp1), ("tp2-flujo", tp2), ("mapa-mental", mapa)):
         p = os.path.join(out, name + ".svg")
         with open(p, "w") as f:
             f.write(fn())
