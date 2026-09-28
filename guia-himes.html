@@ -1,0 +1,291 @@
+<title>Exponer el paper de Himes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#fdf4f8; --surface:#ffffff; --surface2:#fff2f8;
+  --ink:#2c1522; --ink2:#6d4a5c; --ink3:#9b7787;
+  --line:#f2d6e4; --line2:#e8bed3;
+  --accent:#d31c6b; --accent2:#a3134f; --accentsoft:#ffe1ee;
+  --ok:#0f7a52; --oksoft:#dbf5e9; --bad:#c02040; --badsoft:#ffe0e6;
+  --blue:#0a6dbb; --bluesoft:#e4f1fc; --violet:#7333e0; --violetsoft:#f1e9fe;
+  --shadow:0 1px 2px rgba(80,20,50,.06), 0 8px 24px -12px rgba(120,20,70,.18);
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --body:"Source Sans 3",system-ui,-apple-system,Segoe UI,sans-serif;
+  --disp:"Bricolage Grotesque","Source Sans 3",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#180f16; --surface:#241825; --surface2:#2d1d2d;
+  --ink:#fbeaf2; --ink2:#d5b3c5; --ink3:#a98c9c;
+  --line:#3a2434; --line2:#4d2f43;
+  --accent:#ff5c9d; --accent2:#ff8ab8; --accentsoft:#42172d;
+  --ok:#5fd8a4; --oksoft:#12362a; --bad:#ff7e94; --badsoft:#3d1620;
+  --blue:#69bdff; --bluesoft:#12283c; --violet:#b492ff; --violetsoft:#251a3d;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --bg:#180f16; --surface:#241825; --surface2:#2d1d2d;
+  --ink:#fbeaf2; --ink2:#d5b3c5; --ink3:#a98c9c;
+  --line:#3a2434; --line2:#4d2f43;
+  --accent:#ff5c9d; --accent2:#ff8ab8; --accentsoft:#42172d;
+  --ok:#5fd8a4; --oksoft:#12362a; --bad:#ff7e94; --badsoft:#3d1620;
+  --blue:#69bdff; --bluesoft:#12283c; --violet:#b492ff; --violetsoft:#251a3d;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 26px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.55}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:800;margin:0;line-height:1.14;text-wrap:balance;letter-spacing:-.015em}
+p{margin:0 0 .75em}
+code{font-family:var(--mono);font-size:.86em;background:var(--surface2);border:1px solid var(--line);padding:.08em .32em;border-radius:5px}
+main{max-width:940px;margin:0 auto;padding:34px 20px 80px}
+.eyebrow{font:700 .72rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+h1{font-size:clamp(1.9rem,4.5vw,2.6rem);margin-bottom:.3em}
+.sub{font-size:1.06rem;color:var(--ink2);max-width:62ch}
+.rule{height:4px;width:110px;background:var(--accent);border-radius:2px;margin:18px 0 26px}
+section{margin-bottom:34px}
+h2{font-size:1.42rem;margin-bottom:.45em;padding-bottom:.3em;border-bottom:2px solid var(--line2)}
+h2 .num{font-family:var(--mono);font-size:.78rem;color:var(--accent);letter-spacing:.1em;display:block;margin-bottom:6px;font-weight:700}
+h3{font-size:1.06rem;margin:18px 0 6px;color:var(--accent2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 19px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:13px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+ul,ol{margin:.3em 0 .9em;padding-left:1.2em}
+li{margin:.3em 0}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.94rem;min-width:520px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 .72rem/1.2 var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);background:var(--surface2)}
+tbody tr:last-child td{border-bottom:none}
+.note{border-left:3px solid var(--accent);background:var(--surface2);padding:12px 15px;border-radius:0 10px 10px 0;margin:12px 0}
+.note.warn{border-left-color:var(--bad);background:var(--badsoft)}
+.note.ok{border-left-color:var(--ok);background:var(--oksoft)}
+.note h4{font-size:.98rem;margin-bottom:.3em}
+.note p:last-child{margin-bottom:0}
+.fill{display:inline-block;min-width:54px;border-bottom:2px dotted var(--accent);color:var(--accent);font-family:var(--mono);font-weight:700;text-align:center}
+.say{background:var(--violetsoft);border:1px solid color-mix(in srgb,var(--violet) 30%,transparent);border-radius:12px;padding:13px 16px;margin:10px 0}
+.say b{color:var(--violet);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px;font-family:var(--body)}
+.say p{font-size:1.02rem;margin:0}
+.timeline{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:78px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step .t{font-family:var(--mono);font-weight:700;color:var(--accent);font-size:.92rem;padding-top:2px}
+.step b{display:block;font-family:var(--disp);font-size:1.02rem;margin-bottom:3px}
+.step p{margin:0;color:var(--ink2);font-size:.96rem}
+.q{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px 17px;margin-bottom:10px}
+.q b{display:block;font-family:var(--disp);font-size:1rem;margin-bottom:5px}
+.q p{margin:0;color:var(--ink2);font-size:.96rem}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:.8rem;margin:10px 0}
+.flow span{background:var(--surface2);border:1px solid var(--line);padding:5px 9px;border-radius:8px}
+.flow i{color:var(--accent);font-style:normal;font-weight:700}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line)}
+.chk li::before{content:"";flex:0 0 16px;height:16px;border:2px solid var(--line2);border-radius:4px;margin-top:4px}
+.muted{color:var(--ink3);font-size:.88rem}
+.pill{display:inline-flex;gap:6px;align-items:center;font:700 .74rem/1 var(--body);padding:5px 9px;border-radius:999px;background:var(--accentsoft);color:var(--accent2);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent)}
+.ficha{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.96rem}
+.ficha dt{font-weight:700;color:var(--accent2)}
+.ficha dd{margin:0;color:var(--ink2)}
+@media print{
+  @page{size:A4;margin:14mm 13mm 15mm}
+  body{background:#fff;font-size:10pt;line-height:1.4}
+  main{padding:0;max-width:none}
+  .card,.note,.q,.say,.tablewrap{box-shadow:none;break-inside:avoid}
+  section{break-inside:auto;margin-bottom:6mm}
+  h2{break-after:avoid}
+  .step{break-inside:avoid}
+}
+</style>
+
+<main>
+<p class="eyebrow">Guía para exponer en clase · Genómica y Proteómica</p>
+<h1>Himes et al. 2014: cómo contar este paper en 10 minutos</h1>
+<p class="sub">RNA-Seq Transcriptome Profiling Identifies <b>CRISPLD2</b> as a Glucocorticoid Responsive Gene that Modulates Cytokine Function in Airway Smooth Muscle Cells.</p>
+<div class="rule"></div>
+
+<div class="note warn">
+  <h4>Antes que nada: completá estos huecos con el PDF abierto</h4>
+  <p>Marqué con <span class="fill">__</span> los datos que tenés que sacar del paper (números de figura, software, detalles de la librería). Son 5 minutos con el PDF y la exposición queda blindada. La lista completa está al final, en <b>“Lo que tenés que completar”</b>.</p>
+</div>
+
+<!-- ============ 1 ============ -->
+<section>
+  <h2><span class="num">01</span>La ficha</h2>
+  <div class="card">
+    <dl class="ficha">
+      <dt>Cita</dt><dd>Himes BE, Jiang X, Wagner P, et al. <i>PLoS ONE</i> 2014; 9(6): e99625.</dd>
+      <dt>DOI</dt><dd><code>10.1371/journal.pone.0099625</code> · acceso abierto</dd>
+      <dt>Datos</dt><dd>GEO: <code>GSE52778</code> (y es el dataset <code>airway</code> de Bioconductor)</dd>
+      <dt>Modelo</dt><dd>Células de <b>músculo liso de vía aérea humana</b> (ASM) en cultivo primario</dd>
+      <dt>Tratamiento</dt><dd><b>Dexametasona 1 µM, 18 h</b> vs. control sin tratar</dd>
+      <dt>Muestras</dt><dd><b>4 líneas primarias</b> (4 donantes) × 2 condiciones</dd>
+      <dt>Resultado central</dt><dd><b>316 genes diferencialmente expresados</b> (p ajustado por Benjamini-Hochberg &lt; 0,05)</dd>
+    </dl>
+  </div>
+  <div class="note ok">
+    <h4>Por qué este paper es cómodo para exponer</h4>
+    <p>Diseño de <b>dos condiciones</b>, pocas muestras, un resultado principal y — lo más importante para esta materia — recorre <b>los tres niveles de validación</b>: técnica, biológica y funcional. Es el paper completo del razonamiento ómico en 8 páginas.</p>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section>
+  <h2><span class="num">02</span>La historia: pregunta, hipótesis y por qué transcriptómica</h2>
+  <p>Los <b>glucocorticoides</b> (dexametasona, budesonida) son el tratamiento de base del asma. Actúan en parte sobre el <b>músculo liso de la vía aérea</b>, que no es sólo el que se contrae: también produce citoquinas y participa en la inflamación. Pero no se sabía bien <b>qué genes median</b> ese efecto antiinflamatorio, y hay pacientes que responden mal al tratamiento.</p>
+  <div class="say">
+    <b>Cómo lo decís</b>
+    <p>“La pregunta del trabajo es: ¿qué genes cambian su expresión en el músculo liso de la vía aérea cuando se lo trata con un corticoide, y alguno de esos genes puede explicar el efecto antiinflamatorio?”</p>
+  </div>
+  <h3>Por qué transcriptómica y no genómica</h3>
+  <p>Acá es donde enganchás con la materia: el <b>genoma de la célula tratada y el de la no tratada es exactamente el mismo</b>. Lo único que cambia es <b>qué genes se expresan y cuánto</b>. Por eso la pregunta sólo se puede responder midiendo ARN, no ADN. Es el ejemplo perfecto de por qué el transcriptoma es dinámico y depende del momento, el tejido y la condición.</p>
+  <div class="note">
+    <h4>Y por qué es discovery-driven</h4>
+    <p>No fueron a medir un gen candidato por qPCR: midieron <b>todos</b> los transcriptos sin saber de antemano cuál iba a aparecer. El hallazgo (CRISPLD2) <b>sale de los datos</b> y recién después se convierte en hipótesis, que se testea con un experimento dirigido. Datos masivos → diferencia inesperada → hipótesis → validación.</p>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section>
+  <h2><span class="num">03</span>El diseño experimental</h2>
+  <div class="grid g3">
+    <div class="card"><b>4 donantes</b><p class="muted" style="margin:4px 0 0">Cuatro líneas primarias independientes = <b>réplicas biológicas</b>, no técnicas. Capturan variabilidad entre individuos.</p></div>
+    <div class="card"><b>Diseño pareado</b><p class="muted" style="margin:4px 0 0">Cada línea es su propio control (tratada vs. no tratada), así la variabilidad entre donantes no tapa el efecto del tratamiento.</p></div>
+    <div class="card"><b>1 µM · 18 h</b><p class="muted" style="margin:4px 0 0">Una sola dosis y un solo tiempo: es una foto, no una curva. Anotalo como limitación.</p></div>
+  </div>
+  <div class="note warn">
+    <h4>La pregunta que te van a hacer</h4>
+    <p><b>“¿Cuatro es suficiente?”</b> Respuesta honesta: es un n bajo, típico de 2014 por el costo, y limita el poder estadístico para detectar cambios chicos. Lo compensan con el <b>diseño pareado</b>, con la aparición de <b>genes control conocidos</b> y con la <b>validación posterior</b>. Decirlo vos antes de que te lo pregunten suma muchísimo.</p>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section>
+  <h2><span class="num">04</span>El flujo de trabajo, en el orden en que lo contás</h2>
+  <div class="flow">
+    <span>ARN total</span><i>→</i><span>librería</span><i>→</i><span>Illumina</span><i>→</i><span>FASTQ</span><i>→</i><span>QC</span><i>→</i><span>alineamiento splice-aware</span><i>→</i><span>conteo por gen</span><i>→</i><span>normalización</span><i>→</i><span>expresión diferencial</span><i>→</i><span>corrección FDR</span><i>→</i><span>GO / vías</span><i>→</i><span>validación</span>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Paso</th><th>Qué se hace</th><th>La frase que te da puntos</th></tr></thead>
+    <tbody>
+      <tr><td><b>Extracción y librería</b></td><td>Se extrae ARN y se prepara la librería. Preguntá al PDF si hicieron <b>selección de poliA</b> o depleción de ARN ribosomal: <span class="fill">__</span></td><td>“No se secuencian todos los ARN: el ARNr sería el 80-90% de las lecturas, así que se enriquece en ARNm.”</td></tr>
+      <tr><td><b>Retrotranscripción</b></td><td>El ARN se pasa a <b>ADNc</b> con transcriptasa reversa antes de secuenciar.</td><td>“El secuenciador lee ADN: el ARN nunca entra como tal.”</td></tr>
+      <tr><td><b>FASTQ y control de calidad</b></td><td>Lecturas + calidad por base; se revisa con FastQC y se recortan adaptadores y extremos malos.</td><td>“La calidad cae al final de las lecturas; si no se limpia, empeora el alineamiento.”</td></tr>
+      <tr><td><b>Alineamiento</b></td><td>Contra el genoma humano, con un alineador <b>splice-aware</b>. Software usado: <span class="fill">__</span></td><td>“Un alineador de ADN genómico espera lecturas continuas; en RNA-seq una lectura puede <b>cruzar una unión exón-exón</b>, así que el alineador tiene que poder partirla y saltar el intrón.”</td></tr>
+      <tr><td><b>Conteo</b></td><td>Cuántas lecturas caen en cada gen → <b>count matrix</b>: filas = genes, columnas = muestras, celdas = número de lecturas.</td><td>“La matriz de cuentas son datos crudos; todavía no dice nada sobre diferencias.”</td></tr>
+      <tr><td><b>Normalización</b></td><td>Corrige por profundidad de secuenciación y composición de la librería.</td><td>“Sin normalizar, una muestra secuenciada más profundo parecería expresar más todo.”</td></tr>
+      <tr><td><b>Expresión diferencial</b></td><td>Test gen por gen → tabla con log₂ fold change, p-valor y <b>p ajustado</b>. Software: <span class="fill">__</span></td><td>“Acá se pasa de contar a comparar.”</td></tr>
+      <tr><td><b>Corrección por múltiple testeo</b></td><td><b>Benjamini-Hochberg</b>, que es lo que usaron: FDR &lt; 0,05 → 316 genes.</td><td>“Testeando ~20.000 genes, con p &lt; 0,05 tendrías ~1.000 falsos positivos sólo por azar. Por eso se corrige.”</td></tr>
+      <tr><td><b>Interpretación biológica</b></td><td>Ontología génica / vías: de la lista de genes a los procesos.</td><td>“Una lista de genes no es un resultado: hay que construir un modelo biológico.”</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section>
+  <h2><span class="num">05</span>Las figuras: qué mirar y cómo explicarlas</h2>
+  <p class="muted">Anotá el número de cada figura cuando abras el PDF. El guion sirve igual, sea cual sea el orden.</p>
+
+  <h3>Figura <span class="fill">__</span> · Agrupamiento de las muestras (PCA, MDS o clustering)</h3>
+  <div class="say"><b>Cómo la contás</b><p>“Cada punto es <b>una muestra</b>, no un gen. Si las tratadas se separan de las controles, significa que el tratamiento es la principal fuente de variación. También sirve para ver si alguna muestra es un outlier o si hay efecto de lote.”</p></div>
+
+  <h3>Figura <span class="fill">__</span> · Volcano plot o gráfico de fold change vs. significancia</h3>
+  <div class="say"><b>Cómo la contás</b><p>“Acá cada punto <b>sí</b> es un gen. En el eje x, el log₂ del fold change: a la derecha los inducidos por dexametasona, a la izquierda los reprimidos. En el eje y, menos log₁₀ del p-valor ajustado: cuanto más arriba, más confiable. Los genes que importan están arriba y a los costados: <b>cambio grande y estadísticamente sólido</b>. Un gen puede tener un fold change enorme y no ser significativo si varía mucho entre donantes.”</p></div>
+
+  <h3>Figura <span class="fill">__</span> · Heatmap de los genes diferenciales</h3>
+  <div class="say"><b>Cómo la contás</b><p>“Filas = genes, columnas = muestras, color = expresión normalizada. Lo importante no es cada celda sino el <b>patrón</b>: las columnas se agrupan por condición, y se ven bloques de genes que suben y bloques que bajan con el corticoide.”</p></div>
+
+  <h3>Figura <span class="fill">__</span> · Validación por qPCR y proteína</h3>
+  <div class="say"><b>Cómo la contás</b><p>“Confirmaron que la dexametasona aumenta el <b>ARNm de CRISPLD2 por qPCR</b> y también la <b>proteína</b>. Esto es <b>validación técnica</b>: demuestra que la señal del RNA-seq no era un artefacto del método ni del pipeline. Y el salto ARNm → proteína es importante, porque la correlación entre transcriptoma y proteoma no es perfecta.”</p></div>
+
+  <h3>Figura <span class="fill">__</span> · El experimento funcional: knockdown de CRISPLD2</h3>
+  <div class="say"><b>Cómo la contás</b><p>“Bajaron la expresión de CRISPLD2 y estimularon las células con <b>IL-1β</b>. Resultado: <b>aumentó todavía más la expresión de IL6 e IL8</b>. O sea que CRISPLD2 <b>frena</b> la respuesta inflamatoria: si lo sacás, la inflamación se dispara. Esta es la <b>validación funcional</b>, y es la que permite pasar de ‘este gen está asociado al tratamiento’ a ‘este gen hace algo’.”</p></div>
+
+  <div class="note ok">
+    <h4>El detalle que demuestra que entendiste el paper</h4>
+    <p>Entre los 316 genes aparecen <b>DUSP1, KLF15, PER1 y TSC22D3</b>, que ya se sabía que responden a glucocorticoides. Eso funciona como <b>control positivo interno</b>: si el experimento no los hubiera encontrado, habría que desconfiar de todo lo demás. <b>CRISPLD2</b> es el hallazgo nuevo, y es el que se sigue.</p>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section>
+  <h2><span class="num">06</span>Los tres niveles de validación en este paper</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Nivel</th><th>Pregunta que responde</th><th>Qué hicieron acá</th></tr></thead>
+    <tbody>
+      <tr><td><b>Técnica</b></td><td>¿La medición es real o un artefacto del método?</td><td><b>qPCR</b> y <b>Western blot</b> sobre las mismas muestras, con una técnica independiente del RNA-seq.</td></tr>
+      <tr><td><b>Biológica</b></td><td>¿Se repite o fue casualidad de estas muestras?</td><td>Cuatro donantes independientes y la aparición de genes de respuesta a corticoides ya conocidos. <span class="muted">Fijate si además lo replicaron en líneas adicionales: <span class="fill">__</span></span></td></tr>
+      <tr><td><b>Funcional</b></td><td>¿El gen realmente hace algo, o sólo está asociado?</td><td><b>Knockdown</b> de CRISPLD2 + estímulo con IL-1β → cambia la respuesta de IL6 e IL8. Pasa de correlación a <b>causalidad</b>.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">Si te queda tiempo: podrías proponer una validación funcional más fuerte, como sobreexpresar CRISPLD2 y ver si <b>rescata</b> el fenotipo, o usar CRISPR en vez de siRNA.</p>
+</section>
+
+<!-- ============ 7 ============ -->
+<section>
+  <h2><span class="num">07</span>Guion cronometrado (10 minutos)</h2>
+  <div class="card timeline">
+    <div class="step"><div class="t">0:00–1:00</div><div><b>Contexto y pregunta</b><p>Asma, corticoides, músculo liso de vía aérea. “¿Qué genes median el efecto del corticoide?” Cerrá con: el genoma es el mismo, lo que cambia es la expresión → hace falta transcriptómica.</p></div></div>
+    <div class="step"><div class="t">1:00–2:30</div><div><b>Diseño</b><p>4 líneas primarias, dexametasona 1 µM 18 h vs. control, diseño pareado. Aclarás réplicas biológicas y por qué el pareo.</p></div></div>
+    <div class="step"><div class="t">2:30–4:00</div><div><b>Flujo bioinformático</b><p>ARN → ADNc → FASTQ → QC → alineamiento <b>splice-aware</b> → count matrix → normalización → expresión diferencial → FDR. No te detengas en nombres de software: contá el <b>por qué</b> de cada paso.</p></div></div>
+    <div class="step"><div class="t">4:00–6:30</div><div><b>Resultados y figuras</b><p>316 genes con BH &lt; 0,05. Mostrás el agrupamiento de muestras, el volcano y el heatmap con el guion de la sección 5. Marcás los genes control conocidos y presentás CRISPLD2.</p></div></div>
+    <div class="step"><div class="t">6:30–8:30</div><div><b>Validación</b><p>qPCR y proteína (técnica) → knockdown + IL-1β → IL6/IL8 (funcional). Es el corazón de la exposición: acá se ve el método científico completo.</p></div></div>
+    <div class="step"><div class="t">8:30–9:30</div><div><b>Conclusión y limitaciones</b><p>Qué aporta (un gen nuevo en la respuesta a corticoides, con función antiinflamatoria) y qué no (n bajo, un solo tiempo y dosis, células en cultivo, no pacientes).</p></div></div>
+    <div class="step"><div class="t">9:30–10:00</div><div><b>Cierre con una pregunta abierta</b><p>“¿Las variantes en CRISPLD2 explicarán por qué algunos pacientes responden peor a los corticoides?” Deja la puerta abierta a farmacogenómica y engancha con el resto de la materia.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section>
+  <h2><span class="num">08</span>Preguntas que te pueden hacer (y la respuesta corta)</h2>
+
+  <div class="q"><b>¿Por qué RNA-seq y no un microarray?</b><p>Porque el microarray sólo mide lo que tiene sonda diseñada de antemano, tiene menor rango dinámico y se satura. El RNA-seq no necesita conocer los transcriptos previamente, detecta isoformas y variantes de splicing, y permite descubrir transcriptos no anotados.</p></div>
+
+  <div class="q"><b>¿En qué se diferencia el alineador de RNA-seq del de ADN genómico?</b><p>Tiene que ser <b>splice-aware</b>: una lectura de ARNm maduro puede empezar en un exón y terminar en el siguiente, así que el alineador debe poder partir la lectura y saltar el intrón. Un alineador genómico común la descartaría o la mapearía mal.</p></div>
+
+  <div class="q"><b>¿Qué información hay en la count matrix y qué en la tabla de expresión diferencial?</b><p>La <b>matriz de cuentas</b>: filas = genes, columnas = muestras, y en cada celda cuántas lecturas cayeron en ese gen en esa muestra (datos crudos). La <b>tabla de expresión diferencial</b>: una fila por gen con el fold change, el log₂FC, el p-valor y el p-valor ajustado, comparando las dos condiciones.</p></div>
+
+  <div class="q"><b>¿Por qué se usa el p-valor ajustado y no el crudo?</b><p>Porque se hacen ~20.000 tests, uno por gen. Con p &lt; 0,05 sin corregir, ~1.000 genes darían significativo sólo por azar. Benjamini-Hochberg controla la <b>tasa de falsos descubrimientos (FDR)</b>: de los que llamo significativos, qué proporción espero que sean falsos positivos.</p></div>
+
+  <div class="q"><b>¿Un gen con fold change alto es siempre el más importante?</b><p>No. Si varía mucho entre réplicas, puede tener un p-valor ajustado malo. Y al revés: un cambio chico pero muy consistente puede ser altamente significativo. Por eso el volcano tiene <b>dos ejes</b>: magnitud y confianza.</p></div>
+
+  <div class="q"><b>¿El proteoma se vería igual que el transcriptoma?</b><p>No necesariamente. La correlación ARNm-proteína es moderada: hay regulación traduccional, distinta estabilidad de proteínas y ARN, y modificaciones postraduccionales. Por eso en este paper confirmaron CRISPLD2 también <b>a nivel de proteína</b>, no sólo de ARNm.</p></div>
+
+  <div class="q"><b>¿Este resultado se puede extrapolar a pacientes?</b><p>Con cuidado: son células en cultivo, de 4 donantes, con una dosis y un tiempo. Es una buena generación de hipótesis; para llevarlo a la clínica harían falta más donantes, tejido real y estudios en pacientes tratados.</p></div>
+
+  <div class="q"><b>¿Podrías haber respondido esta pregunta con genómica?</b><p>No. El ADN de la célula tratada y el de la control es idéntico. La genómica serviría para otra pregunta: por ejemplo, si <b>variantes</b> en CRISPLD2 se asocian a distinta respuesta al tratamiento — ahí sí entrarían GWAS o farmacogenómica.</p></div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section>
+  <h2><span class="num">09</span>Lo que tenés que completar del PDF</h2>
+  <div class="card">
+    <ul class="chk">
+      <li>Número de cada figura: agrupamiento/PCA, volcano, heatmap, qPCR, knockdown.</li>
+      <li>Preparación de la librería: ¿selección de poliA o depleción de ARN ribosomal?</li>
+      <li>¿Las lecturas son single-end o paired-end, y de cuántas pb?</li>
+      <li>Profundidad aproximada: millones de lecturas por muestra.</li>
+      <li>Qué alineador usaron y contra qué versión del genoma humano.</li>
+      <li>Con qué software hicieron el análisis de expresión diferencial.</li>
+      <li>Si hicieron análisis de ontología génica o de vías, y qué categorías aparecieron.</li>
+      <li>Si validaron en líneas o cohortes adicionales (validación biológica).</li>
+      <li>Una frase textual de la discusión para citar en el cierre.</li>
+    </ul>
+    <p class="muted" style="margin-top:12px">Atajo: casi todo está en <b>Materiales y métodos</b>, primeros dos párrafos, y en los pies de figura.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">10</span>Las tres frases con las que cerrar</h2>
+  <div class="grid g2">
+    <div class="note"><p><b>1.</b> “El genoma es el mismo en las dos condiciones: lo único que cambia es qué genes se expresan. Por eso la pregunta sólo se puede responder con transcriptómica.”</p></div>
+    <div class="note"><p><b>2.</b> “Una lista de 316 genes no es un resultado: el resultado aparece cuando se convierte en un modelo biológico y se lo pone a prueba.”</p></div>
+    <div class="note"><p><b>3.</b> “El RNA-seq generó la hipótesis; el knockdown la transformó en una relación causal. Eso es lo que separa una asociación de una función.”</p></div>
+  </div>
+</section>
+
+<p class="muted" style="border-top:1px solid var(--line);padding-top:14px">
+Paper: Himes BE et al., <i>PLoS ONE</i> 2014;9(6):e99625 · doi:10.1371/journal.pone.0099625 · acceso abierto · datos en GEO <code>GSE52778</code>.
+Los datos de diseño y resultados de esta guía están tomados de la ficha pública del paper; los huecos marcados son los que hay que confirmar leyendo el PDF.
+</p>
+</main>
